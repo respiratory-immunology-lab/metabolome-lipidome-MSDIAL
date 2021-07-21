@@ -238,7 +238,7 @@ and finally transformation using a variance-stabling generalised logarithmic tra
 
 The generalised logarithmic (glog) transformation stabilises the variance across low and high intensity mass spectral features.
 The `glog_transformation` function uses QC samples to optimise the scaling factor `lambda`. 
-Using the function `glog_plot_plot_optimised_lambda` it’s possible to visualise if the optimisation of the given parameter has converged at the minima.
+Using the function `glog_plot_optimised_lambda` it’s possible to visualise if the optimisation of the given parameter has converged at the minima.
 
 ```r
 # PQN data normalisation
