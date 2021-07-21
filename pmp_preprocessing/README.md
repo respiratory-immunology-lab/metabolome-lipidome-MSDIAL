@@ -265,6 +265,10 @@ glog_plot_optimised_lambda(df = metab_stool_imp,
                            qc_label = 'QC')
 ```
 
+Example plot:
+
+<img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/pmp_preprocessing/assets/glog_optimised_lambda_plot.png" height="400">
+
 We can also check the number of assigned metabolites that remain.
 
 ```r
@@ -304,3 +308,7 @@ data_PCA_stool <- cbind(data.frame(Samples = rownames(PCA_stool$x),
          y = paste0('PC2 ', round(varexp_stool[2], 2), '%'))
 )
 ```
+
+Example plot:
+
+<img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/pmp_preprocessing/assets/metab_stool_class_PCA.png" height="400">
