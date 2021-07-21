@@ -234,7 +234,7 @@ Example output (dimension checks):
 
 Finally we can normalise our data using probabilistic quotient normalisation (PQN) ([see documentation](https://rdrr.io/github/computational-metabolomics/pmp/man/pqn_normalisation.html)),
 followed by missing value imputation (various method choices available; [see documentation](https://rdrr.io/github/computational-metabolomics/pmp/man/mv_imputation.html)), 
-and finally transformation using a variance-stabling generalised logarithmic transformation ([see documentation](https://rdrr.io/github/computational-metabolomics/pmp/man/glog_transformation.html)).
+and then transform the data using a variance-stabling generalised logarithmic transformation ([see documentation](https://rdrr.io/github/computational-metabolomics/pmp/man/glog_transformation.html)).
 
 The generalised logarithmic (glog) transformation stabilises the variance across low and high intensity mass spectral features.
 The `glog_transformation` function uses QC samples to optimise the scaling factor `lambda`. 
