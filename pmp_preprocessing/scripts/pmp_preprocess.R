@@ -35,8 +35,8 @@ pmp_preprocess <- function(pos_df, neg_df, metadata = NULL, samples_key = 'Sampl
   metab_pos_counts <- as.matrix(metab_pos[, intens_cols])
   metab_neg_counts <- as.matrix(metab_neg[, intens_cols])
   
-  metab_pos_info <- metab_pos[, info_cols]
-  metab_neg_info <- metab_neg[, info_cols]
+  metab_pos_info <- metab_pos[, colnames(metab_pos) %in% info_cols]
+  metab_neg_info <- metab_neg[, colnames(metab_neg) %in% info_cols]
   
   # Rename the data to indicate ionisation mode
   metab_pos_rownames <- paste0(metab_pos_info$`Alignment ID`, '_pos')
