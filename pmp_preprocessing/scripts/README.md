@@ -2,6 +2,17 @@
 
 The script in this folder will automate the initial pre-processing steps outlined in the `pmp_preprocessing` folder.
 
+You can download the script `.R` file and place it in a folder within your R project.
+To load the function into your R environment, you can then load it as follows:
+
+```r
+source(here::here('scripts', 'pmp_preprocess.R')
+
+### OR
+
+source('path/to/scripts/folder/pmp_preprocess.R')
+```
+
 ### Dependencies
 
 The following packages are required, and will be loaded by the function `pmp_preprocess()` if they are not currently loaded.
