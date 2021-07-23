@@ -73,7 +73,7 @@ pmp_preprocess <- function(pos_df, neg_df, metadata = NULL, samples_key = 'Sampl
 
 #### Basic usage
 
-At the simplest level, if you are satisfied with the default parameter values, you can implement function as shown below (an example for stool metabolomics).
+At the simplest level, if you are satisfied with the default parameter values, you can implement the function as shown below (an example for stool metabolomics).
 It is still recommended that you manually set the columns containing the information and intensity values (of blanks, QCs, and samples) to ensure you get the results you expect.
 
 ```r
@@ -97,4 +97,4 @@ The function will return a list with five elements:
 - `glog_results`: a `SummarizedExperiment` object containining the PQN normalised, imputed, and glog-transformed values.
 - `glog_plot`: a `ggplot2` plot showing the glog optimised lambda value to confirm that it converged at the minima.
 - `PCA_plot`: a `ggplot2` PCA plot showing your samples by class (i.e. QC vs samples).
-- `filtering_dimensions` a `data.frame` object showing the dimensions of your `SummarizedExperiment` object throughout filtering.
+- `filtering_dimensions`: a `data.frame` object showing the dimensions of your `SummarizedExperiment` object throughout filtering.
