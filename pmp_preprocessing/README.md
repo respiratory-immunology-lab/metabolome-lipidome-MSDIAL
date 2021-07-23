@@ -12,7 +12,7 @@ easy to use and reproducible manner.
 
 ## Methods
 
-An R script to handle the various steps is available within the [scripts folder](https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/tree/main/pmp_preprocessing/scripts), and will be explained in-depth below.
+An R function to handle the various steps is available within the [scripts folder](https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/tree/main/pmp_preprocessing/scripts), and will be explained in-depth below.
 
 ### R environment set-up
 
