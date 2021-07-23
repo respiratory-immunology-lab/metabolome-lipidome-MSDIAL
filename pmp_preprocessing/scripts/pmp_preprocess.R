@@ -1,8 +1,8 @@
-pmp_preprocess <- function(pos_df, neg_df, metadata, samples_key = 'Sample', intens_cols = NULL, info_cols = NULL,
+pmp_preprocess <- function(pos_df, neg_df, metadata = NULL, samples_key = 'Sample', intens_cols = NULL, info_cols = NULL,
                            blankFC = 5, max_perc_mv = 0.8, missingPeaksFraction = 0.8, max_rsd = 25, 
                            mv_imp_rowmax = 0.7, mv_imp_colmax = 0.7, mv_imp_method = 'knn'){
   # Load required packages
-  pkgs <- c('data.table', 'tidyverse', 'kableExtra', 'ggplot2', 'pmp', 'SummarizedExperiment', 'S4Vectors',
+  pkgs <- c('data.table', 'tidyverse', 'ggplot2', 'pmp', 'SummarizedExperiment', 'S4Vectors',
             'ggsci')
   for (pkg in pkgs) {
     suppressPackageStartupMessages(library(pkg, character.only = TRUE))
@@ -55,16 +55,24 @@ pmp_preprocess <- function(pos_df, neg_df, metadata, samples_key = 'Sample', int
   metab_class <- substr(colnames(metab_counts), start = 1, stop = 2)
   metab_group <- substr(colnames(metab_counts), start = 1, stop = 2)
   
-  # Check that the metadata matches the samples
-  sample_cols <- str_detect(colnames(metab_counts), paste0(samples_key))
-  metadata <- metadata[colnames(metab_counts)[sample_cols], ]
-  identical(rownames(metadata), colnames(metab_counts)[sample_cols])
-  
-  # Create SummarizedExperiment object
-  metab_SE <- SummarizedExperiment(assays = list(counts = metab_counts),
-                                   metadata = list(metadata = metadata),
-                                   rowData = list(info = metab_info),
-                                   colData = DataFrame(class = metab_class))
+  # Alternate steps depending on whether metadata was provided
+  if (is.null(metadata)) {
+    # Create SummarizedExperiment object
+    metab_SE <- SummarizedExperiment(assays = list(counts = metab_counts),
+                                     rowData = list(info = metab_info),
+                                     colData = DataFrame(class = metab_class))
+  } else {
+    # Check that the metadata matches the samples
+    sample_cols <- str_detect(colnames(metab_counts), paste0(samples_key))
+    metadata <- metadata[colnames(metab_counts)[sample_cols], ]
+    identical(rownames(metadata), colnames(metab_counts)[sample_cols])
+    
+    # Create SummarizedExperiment object
+    metab_SE <- SummarizedExperiment(assays = list(counts = metab_counts),
+                                     metadata = list(metadata = metadata),
+                                     rowData = list(info = metab_info),
+                                     colData = DataFrame(class = metab_class))
+  }
   
   print('SummarizedExperiment object created...')
   
