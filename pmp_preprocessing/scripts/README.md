@@ -98,3 +98,9 @@ The function will return a list with five elements:
 - `glog_plot`: a `ggplot2` plot showing the glog optimised lambda value to confirm that it converged at the minima.
 - `PCA_plot`: a `ggplot2` PCA plot showing your samples by class (i.e. QC vs samples).
 - `filtering_dimensions`: a `data.frame` object showing the dimensions of your `SummarizedExperiment` object throughout filtering.
+
+## Rights
+
+* Copyright (c) 2021 Respiratory Immunology lab, Monash University, Melbourne, Australia.
+* License: This pipeline is provided under the MIT license (See LICENSE.txt for details)
+* Authors: M. Macowan
