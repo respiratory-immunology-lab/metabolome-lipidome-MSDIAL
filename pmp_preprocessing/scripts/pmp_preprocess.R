@@ -3,14 +3,13 @@ pmp_preprocess <- function(pos_df, neg_df, metadata = NULL, samples_key = 'Sampl
                            mv_imp_rowmax = 0.7, mv_imp_colmax = 0.7, mv_imp_method = 'knn'){
   # Load required packages
   pkgs <- c('data.table', 'tidyverse', 'ggplot2', 'pmp', 'SummarizedExperiment', 'S4Vectors',
-            'ggsci')
+            'ggsci', 'stringr')
   for (pkg in pkgs) {
     suppressPackageStartupMessages(library(pkg, character.only = TRUE))
   }
   
-  # Remove MS/MS samples (not acquired in the same way)
-  metab_pos <- pos_df[, !(names(pos_df) %in% c('MSMS_pos', 'MSMS_neg'))]
-  metab_neg <- neg_df[, !(names(neg_df) %in% c('MSMS_pos', 'MSMS_neg'))]
+  metab_pos <- pos_df
+  metab_neg <- neg_df
   
   # Get info columns and intensity columns
   if (is.null(info_cols)) {
@@ -23,6 +22,11 @@ pmp_preprocess <- function(pos_df, neg_df, metadata = NULL, samples_key = 'Sampl
                    'Isotope tracking weight number', 'Total score', 'RT similarity',
                    'Dot product', 'Reverse dot product', 'Fragment presence %', 'S/N average',
                    'Spectrum reference file name', 'MS1 isotopic spectrum', 'MS/MS spectrum')
+    metab_pos_info <- metab_pos[, colnames(metab_pos) %in% info_cols]
+    metab_neg_info <- metab_neg[, colnames(metab_neg) %in% info_cols]
+  } else {
+    metab_pos_info <- metab_pos[, info_cols]
+    metab_neg_info <- metab_neg[, info_cols]
   }
   
   # Get QC, blanks, and sample columns
@@ -35,8 +39,9 @@ pmp_preprocess <- function(pos_df, neg_df, metadata = NULL, samples_key = 'Sampl
   metab_pos_counts <- as.matrix(metab_pos[, intens_cols])
   metab_neg_counts <- as.matrix(metab_neg[, intens_cols])
   
-  metab_pos_info <- metab_pos[, colnames(metab_pos) %in% info_cols]
-  metab_neg_info <- metab_neg[, colnames(metab_neg) %in% info_cols]
+  # Remove MS/MS samples (not acquired in the same way)
+  metab_pos_counts <- metab_pos_counts[, !(colnames(metab_pos_counts) %in% c('MSMS_pos', 'MSMS_neg'))]
+  metab_neg_counts <- metab_neg_counts[, !(colnames(metab_neg_counts) %in% c('MSMS_pos', 'MSMS_neg'))]
   
   # Rename the data to indicate ionisation mode
   metab_pos_rownames <- paste0(metab_pos_info$`Alignment ID`, '_pos')
@@ -63,7 +68,7 @@ pmp_preprocess <- function(pos_df, neg_df, metadata = NULL, samples_key = 'Sampl
                                      colData = DataFrame(class = metab_class))
   } else {
     # Check that the metadata matches the samples
-    sample_cols <- str_detect(colnames(metab_counts), paste0(samples_key))
+    sample_cols <- stringr::str_detect(colnames(metab_counts), paste0(samples_key))
     metadata <- metadata[colnames(metab_counts)[sample_cols], ]
     identical(rownames(metadata), colnames(metab_counts)[sample_cols])
     
