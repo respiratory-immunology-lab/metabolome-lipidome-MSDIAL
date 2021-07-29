@@ -25,7 +25,7 @@ gnps_format_names <- function(gnps_pos_df, gnps_neg_df) {
   gnps_pos_df$compound_name_gnps <- gnps_remove_tags(gnps_pos_df$compound_name_gnps)
   gnps_neg_df$compound_name_gnps <- gnps_remove_tags(gnps_neg_df$compound_name_gnps)
   
-  # Switch to sentence case
+  # Switch to title case
   gnps_pos_df$compound_name_gnps <- stringr::str_to_title(gnps_pos_df$compound_name_gnps)
   gnps_neg_df$compound_name_gnps <- stringr::str_to_title(gnps_neg_df$compound_name_gnps)
   
