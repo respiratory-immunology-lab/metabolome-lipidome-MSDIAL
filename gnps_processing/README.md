@@ -1,6 +1,6 @@
 # Secondary MS/MS feature identification with GNPS
 
-After processing our metabolomics LCMS data using the MS-DIAL pipeline, we can get secondary annotations using the feature-based
+After processing our metabolomics LCMS data using the MS-DIAL pipeline, we can get secondary annotations for our MS/MS data using the feature-based
 molecular networking (FBMN) workflow available from the Global Natural Products Social (GNPS) Molecular Networking team.
 
 To use this tool, you will first have to register for a new account if you do not already have one.
