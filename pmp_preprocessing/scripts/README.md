@@ -77,8 +77,8 @@ At the simplest level, if you are satisfied with the default parameter values, y
 It is still recommended that you manually set the columns containing the information and intensity values (of blanks, QCs, and samples) to ensure you get the results you expect.
 
 ```r
-metab_pmp <- pmp_preprocess(pos_df = metab_stool_pos, neg_df = metab_stool_neg, samples_key = 'Stool',
-                            intens_cols = c(33:54, 62:165), info_cols = 1:32)
+metab_stool_pmp <- pmp_preprocess(pos_df = metab_stool_pos, neg_df = metab_stool_neg, samples_key = 'Stool',
+                                  intens_cols = c(33:56, 64:167), info_cols = 1:32)
 ```
 
 You can then access the various list elements with standard list notation, e.g.:
@@ -98,6 +98,26 @@ The function will return a list with five elements:
 - `glog_plot`: a `ggplot2` plot showing the glog optimised lambda value to confirm that it converged at the minima.
 - `PCA_plot`: a `ggplot2` PCA plot showing your samples by class (i.e. QC vs samples).
 - `filtering_dimensions`: a `data.frame` object showing the dimensions of your `SummarizedExperiment` object throughout filtering.
+
+### Table of named metabolites
+
+It may also now be useful to determine how many of the metabolite features retained following `pmp_preprocess()` are named.
+To do this, we can use the `pmp_metab_isNamed.R` script. 
+
+This function is simple to use, and takes either the `imputed_results` or `glog_results` object as its only input.
+It then returns a TRUE/FALSE table with counts (TRUE means the metabolite is named).
+
+```r
+# See how many peaks are named
+pmp_metab_isNamed(metab_stool_pmp$glog_results)
+```
+
+Example output (181 metabolites are named):
+
+```bash
+FALSE  TRUE 
+ 9248   181 
+```
 
 ## Rights
 
