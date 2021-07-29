@@ -51,7 +51,7 @@ The parameters you can set for the `pmp_preprocess()` function are as follows:
 - `neg_df`: the MS-DIAL height output for the negative ionisation mode.
 - `metadata`: you metadata `data.frame` for __samples__ only (e.g. patient information or clinical metadata for each sample)
 - `samples_key`: a prefix used in the MS-DIAL output that is unique for your __samples__ (not found in blanks and QCs etc.)
-- `intens_cols`: manual column indices of blanks, QCs, and samples.
+- `intens_cols`: manual column indices of blanks, QCs, and samples. Note: MS/MS columns are removed after selection of intensity columns, so just give the total range that encompasses your intensity data output (excluding standards).
 - `info_cols`: manual column indices of the metabolite feature information (should be `1:32` for MS-DIAL version 4.70).
 - `blankFC`: the fold-change increase compared to blank samples that features should have in order to be retained.
 - `max_perc_mv`: samples with a greater percentage of missing values than this will be removed (e.g. `0.8`: samples with >80% missing values are removed).
