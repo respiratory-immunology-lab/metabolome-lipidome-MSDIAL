@@ -124,3 +124,74 @@ rowData(metab_stool_pmp$imputed_results)$compound_name_gnps <- gnps_SE_names(gnp
 
 Now these new names will be available within the `rowData` element of each of our `SummarizedExperiment` objects, and can be
 accessed using `rowData(SE_object)$compound_name_gnps`.
+
+## Explanation of functions
+
+### gnps_format_names()
+
+This function takes two input parameters: `gnps_pos_df` and `gnps_neg_df`. These are the output files from the `DB_results` folder - each contains 35 columns as of version release_18. Importantly, they contain a column named `#SCAN#` (corresponds to the alignment ID of the MS-DIAL output) and another named `Compound_Name`.
+These columns will be used to generate the new `rowData` parameter for your `SummarizedExperiment` objects.
+
+By assigning the result of `gnps_format_names()` to a variable, you will also retain all of the additional feature information in case you need to reference it again. You will be able to determine the correct GNPS-mapped feature using the alignment ID and the ionisation mode of the feature in your `SummarizedExperiment` object.
+
+#### Feature functionality
+
+The function firstly loads the required packages in case they are not already loaded. It requires the following packages are installed in your environment:
+
+- `data.table`
+- `tidyverse`
+- `SummarizedExperiment`
+- `S4Vectors`
+- `stringr`
+
+An inner function (`gnps_remove_tags()`) is defined that will handle the removal of various extraneous text information from the compound names.
+Because GNPS maps your MS/MS data to compound information from various sources, the naming can be quite convoluted.
+The `gnps_remove_tags()` function removes this extra text, e.g. 'Spectral Match to /compound/ from NIST14' will return '/compound/'.
+Currently, it can remove the extra text from NIST14, ReSpect, Massbank, and MoNA derived compounds, and remove any eV information from the end of the names.
+
+Next, the first columns in the GNPS data, i.e. `'#SCAN#'`, are renamed to `'Alignment.ID'`. 
+The `'Compound_Name'` columns are copied to new columns called `'compound_name_gnps'`, which then have the `gnps_remove_tags()` function run on them.
+
+The text in `compound_name_gnps` is formatted to title case using the `stringr` function `str_to_title()`, which capitalises the first letter of each word only.
+Although this may lead to some undesirable changes (e.g. 'ATP' becoming 'Atp'), overall it improves naming uniformity. 
+These values can be renamed downstream if necessary.
+
+A new vector is then made from the `Alignment.ID` column of each data.frame by pasting either `'_pos'` or `'_neg'` to the end, and then concatenating the vectors together.
+
+The individual data.frames are joined using `rbind`, and the vector from above is added as a new column: `'alignment_ionisation'`, as well as being used as the rownames.
+
+The resulting data.frame is returned from the function.
+
+### gnps_SE_names()
+
+This function takes two input parameters: `gnps_df` and `metab_SE`. `gnps_df` is the output data.frame from the `gnps_format_names()` function, and `metab_SE` is one of your `SummarizedExperiment` objects.
+A new `rowData` element will be appended so that your new annotation data does not affect the compound annotations already provided by MS-DIAL.
+
+#### Feature functionality
+
+The function firstly loads the required packages in case they are not already loaded. It requires the following packages are installed in your environment:
+
+- `data.table`
+- `tidyverse`
+- `SummarizedExperiment`
+- `S4Vectors`
+
+A temporary data.frame is generated from the metabolite feature information data element of your `SummarizedExperiment` object.
+The rownames of this data.frame are added to a new column; these will be used to match the `'alignment_ionisation'` column of the `gnps_df` object.
+
+```r
+# Get the metabolite feature info data from SE object
+metab_info_temp <- as.data.frame(metab_SE@elementMetadata@listData)
+metab_info_temp$alignment_ionisation <- rownames(metab_info_temp)
+```
+
+The `'alignment_ionisation'` and `'compound_name_gnps'` columns are selected from the `gnps_df` object, and matched to the metabolite information data.frame using a `left_join()`.
+
+The `'compound_name_gnps'` column from this joined data.frame is then returned from the function.
+
+For efficiency, this function can be used directly in the definition of your new `rowData` element:
+
+```r
+# Add the GNPS compound names to your metabolite SE object
+rowData(metab_SE)$compound_name_gnps <- gnps_SE_names(gnps_df, metab_SE)
+```
