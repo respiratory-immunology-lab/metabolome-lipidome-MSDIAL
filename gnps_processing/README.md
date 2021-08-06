@@ -195,3 +195,10 @@ For efficiency, this function can be used directly in the definition of your new
 # Add the GNPS compound names to your metabolite SE object
 rowData(metab_SE)$compound_name_gnps <- gnps_SE_names(gnps_df, metab_SE)
 ```
+
+## Rights
+
+* Copyright (c) 2021 Respiratory Immunology lab, Monash University, Melbourne, Australia.
+* GNPS: Nothias, L.-F., Petras, D., Schmid, R. et al. Feature-based molecular networking in the GNPS analysis environment. Nat. Methods 17, 905–908 (2020).
+* License: This pipeline is provided under the MIT license (See LICENSE.txt for details)
+* Authors: M. Macowan
