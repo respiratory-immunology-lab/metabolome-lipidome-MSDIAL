@@ -293,4 +293,4 @@ See our guide for annotation of your MS-DIAL data in R using the HMDB database [
 
 ## Downstream analysis
 
-Once you have reached this point, you should have a `SummarizedExperiment` object that contains only annotated features, with intensity values that have been normalised and transformed, and are ready for downstream analysis in R.
+Once you have reached this point, you should have a `SummarizedExperiment` object (complete with sample and feature metadata) that contains only annotated features, with intensity values that have been normalised and transformed, and are ready for downstream analysis in R.
