@@ -264,6 +264,14 @@ Select your export directory, and click `'Save'`.
 
 <img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/assets/step10.png">
 
+## Data pre-processing in R
+
+To pre-process our raw height data within R, we will use tools from the `pmp` package. 
+These steps are explained in depth within our [pmp preprocessing guide](https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/tree/main/pmp_preprocessing).
+
+A selection of custom scripts are also available to handle the pre-processing steps for you, with all of the customisation and fine-tuning 
+normally available when running the steps individually.
+
 ## Secondary annotation methods for metabolomics data
 
 We can use additional tools to annotate more of our metabolite features than MS-DIAL can achieve alone.
@@ -283,10 +291,6 @@ Unlike secondary MS/MS annotation with GNPS, this step occurs following pre-prep
 
 See our guide for annotation of your MS-DIAL data in R using the HMDB database [here](https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/tree/main/hmdb_processing).
 
-## Data pre-processing in R
+## Downstream analysis
 
-To pre-process our raw height data within R, we will use tools from the `pmp` package. 
-These steps are explained in depth within our [pmp preprocessing guide](https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/tree/main/pmp_preprocessing).
-
-A selection of custom scripts are also available to handle the pre-processing steps for you, with all of the customisation and fine-tuning 
-normally available when running the steps individually.
+Once you have reached this point, you should have a `SummarizedExperiment` object that contains only annotated features, with intensity values that have been normalised and transformed, and are ready for downstream analysis in R.
