@@ -312,3 +312,10 @@ data_PCA_stool <- cbind(data.frame(Samples = rownames(PCA_stool$x),
 Example plot:
 
 <img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/pmp_preprocessing/assets/metab_stool_class_PCA.png" height="400">
+
+## Rights
+
+* Copyright (c) 2021 Respiratory Immunology lab, Monash University, Melbourne, Australia.
+* `pmp` package: Jankevics A, Lloyd GR, Weber RJM (2021). pmp: Peak Matrix Processing and signal batch correction for metabolomics datasets. R package version 1.4.0.
+* License: This pipeline is provided under the MIT license (See LICENSE.txt for details)
+* Authors: M. Macowan and C. Pattaroni
