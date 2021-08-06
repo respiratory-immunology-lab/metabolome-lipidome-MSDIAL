@@ -281,7 +281,7 @@ See our guide for running feature-based molecular networking (FBMN) with GNPS, a
 Similarly we can acquire secondary annotation of our MS1 data using the [Human Metabolome Database](https://hmdb.ca/) (HMDB).
 Unlike secondary MS/MS annotation with GNPS, this step occurs following pre-preprocessing within R.
 
-See our guide for annotation of your MS-DIAL data in R using the HMDB database [here]() __- GUIDE STILL TO COME__.
+See our guide for annotation of your MS-DIAL data in R using the HMDB database [here](https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/tree/main/hmdb_processing).
 
 ## Data pre-processing in R
 
