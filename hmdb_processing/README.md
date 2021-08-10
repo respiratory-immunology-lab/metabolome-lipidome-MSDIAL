@@ -84,6 +84,14 @@ Aside from using `rownames()`, we can also retrieve the resulting "preferred" an
 metab_shortnames <- rowData(metab_stool_glog)$shortname
 ```
 
+While the shorter names are succinct and useful plotting, you can view the additional annotations at any time and alter as required.
+
+```R
+# Get HMDB and KEGG annotations
+hmdb_annotations <- rowData(metab_stool_glog)$HMDB
+kegg_annotations <- rowData(metab_stool_glog)$KEGG
+```
+
 ## Rights
 
 * Copyright (c) 2021 Respiratory Immunology lab, Monash University, Melbourne, Australia.
