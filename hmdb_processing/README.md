@@ -23,7 +23,7 @@ hmdb_df <- readRDS(here::here('hmdb', 'hmdb_detected_quantified_v4_20210701.rds'
 hmdb_df <- readRDS('/path/to/hmdb/dataframe/')
 ```
 
-Then, using the `add_hmdb()` function available above, you can search the HMDB annotations in the data.frame and add them to your `SummarizedExperiment` objects, as shown below with an example stool metabolomics object.
+Then, using the `add_hmdb()` function available above, we can search the HMDB annotations in the data.frame and add them to our `SummarizedExperiment` objects, as shown below with an example stool metabolomics object.
 
 If you are using the output of the `pmp_preprocess()` function, you should annotate both the `glog_results` and `imputed_results` list components for consistency in case you need to use the imputed values downstream instead of the glog-transformed data.
 
@@ -37,7 +37,42 @@ metab_stool_pmp$imputed_results <- add_hmdb(SEexperiment = metab_stool_pmp$imput
 
 ### Comparing annotations from MS-DIAL, GNPS, HMDB, and KEGG
 
+We can now compare the assigned annotations from each of the methods using the function `compare_annotations()`, available in this folder.
+It will produce a data.frame containing only features with at least one annotation, and allow us see whether the annotations typically agree with each other.
 
+```R
+# Prepare data.frame with alignment IDs and all four annotations and filter for at least one annotation
+msdial_gnps_hmdb_glog <- compare_annotations(metab_stool_pmp$glog_results)
+```
+
+The beginning of an example output with the stool metabolomics data looks like:
+
+|        | Retention.time | MSDIAL_annotation | GNPS_annotation | HMDB_annotation                              | KEGG_annotation      |
+|--------|----------------|-------------------|-----------------|----------------------------------------------|----------------------|
+| 42_pos |         15.142 | NA                | NA              | 2-Pyrrolidinone                              | C11118               |
+| 59_pos |         10.270 | NA                | NA              | Piperidine                                   | C01746               |
+| 60_pos |         10.758 | NA                | NA              | Piperidine                                   | C01746               |
+| 89_pos |         12.689 | NA                | NA              | gamma-Butyrolactone;Diacetyl;Ethenyl acetate | C01770;C00741;C19309 |
+
+### Keeping only annotated features
+
+From here, we can filter our `SummarizedExperiment` object for features with at least one annotation using the `keep_annotated()` function above.
+It assigns rownames based on a naming hierarchy: HMDB > GNPS > MS-DIAL.
+A new `rowData` element will also be added to the `SummarizedExperiment` object called `shortname`.
+
+This function will be applied to only a single `SummarizedExperiment` object, and the output can be assigned to a new object that can be used for downstream analyses. In the example below, we will run the function for just the glog-transformed data, and assign it to a new object called `metab_stool_glog`.
+
+```R
+# Keep only annotated rows and generate shortname column
+metab_stool_glog <- keep_annotated(metab_stool_pmp$glog_results)
+```
+
+Aside from using `rownames()`, we can also retrieve the resulting "preferred" annotation names for our features as follows:
+
+```R
+# Retrieve the shortname values
+metab_shortnames <- rowData(metab_stool_glog)$shortname
+```
 
 ## Rights
 
