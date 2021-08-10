@@ -27,11 +27,17 @@ Then, using the `add_hmdb()` function available above, we can search the HMDB an
 
 If you are using the output of the `pmp_preprocess()` function, you should annotate both the `glog_results` and `imputed_results` list components for consistency in case you need to use the imputed values downstream instead of the glog-transformed data.
 
+The function takes three parameters:
+
+- `metab_SE`: the `SummarizedExperiment` object.
+- `hmdb`: the formatted HMDB data.frame.
+- `mass_tol`: the MS1 mass tolerance value (set to 0.002 Da by default).
+
 ```R
 # Search annotations in HMDB and add to the SE objects
-metab_stool_pmp$glog_results <- add_hmdb(SEexperiment = metab_stool_pmp$glog_results,
+metab_stool_pmp$glog_results <- add_hmdb(metab_SE = metab_stool_pmp$glog_results,
                                          hmdb = hmdb_df, mass_tol = 0.002)
-metab_stool_pmp$imputed_results <- add_hmdb(SEexperiment = metab_stool_pmp$imputed_results,
+metab_stool_pmp$imputed_results <- add_hmdb(metab_SE = metab_stool_pmp$imputed_results,
                                             hmdb = hmdb_df, mass_tol = 0.002)
 ```
 
@@ -39,6 +45,8 @@ metab_stool_pmp$imputed_results <- add_hmdb(SEexperiment = metab_stool_pmp$imput
 
 We can now compare the assigned annotations from each of the methods using the function `compare_annotations()`, available in this folder.
 It will produce a data.frame containing only features with at least one annotation, and allow us see whether the annotations typically agree with each other.
+
+The function takes only a single argument: a `SummarizedExperiment` object that has undergone secondary annotation with both GNPS and HMDB.
 
 ```R
 # Prepare data.frame with alignment IDs and all four annotations and filter for at least one annotation
@@ -61,6 +69,8 @@ It assigns rownames based on a naming hierarchy: HMDB > GNPS > MS-DIAL.
 A new `rowData` element will also be added to the `SummarizedExperiment` object called `shortname`.
 
 This function will be applied to only a single `SummarizedExperiment` object, and the output can be assigned to a new object that can be used for downstream analyses. In the example below, we will run the function for just the glog-transformed data, and assign it to a new object called `metab_stool_glog`.
+
+The function takes only a single argument: a `SummarizedExperiment` object that has undergone secondary annotation with both GNPS and HMDB.
 
 ```R
 # Keep only annotated rows and generate shortname column
