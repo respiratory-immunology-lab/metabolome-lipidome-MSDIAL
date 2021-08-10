@@ -53,14 +53,14 @@ The function takes only a single argument: a `SummarizedExperiment` object that 
 msdial_gnps_hmdb_glog <- compare_annotations(metab_stool_pmp$glog_results)
 ```
 
-The beginning of an example output with the stool metabolomics data looks like:
+A section of an example output with the stool metabolomics data looks like:
 
-|        | Retention.time | MSDIAL_annotation | GNPS_annotation | HMDB_annotation                              | KEGG_annotation      |
-|--------|----------------|-------------------|-----------------|----------------------------------------------|----------------------|
-| 42_pos |         15.142 | NA                | NA              | 2-Pyrrolidinone                              | C11118               |
-| 59_pos |         10.270 | NA                | NA              | Piperidine                                   | C01746               |
-| 60_pos |         10.758 | NA                | NA              | Piperidine                                   | C01746               |
-| 89_pos |         12.689 | NA                | NA              | gamma-Butyrolactone;Diacetyl;Ethenyl acetate | C01770;C00741;C19309 |
+|          | Retention.time | MSDIAL_annotation                           | GNPS_annotation   | HMDB_annotation                          | KEGG_annotation      |
+|----------|----------------|---------------------------------------------|-------------------|------------------------------------------|----------------------|
+|   42_pos |         15.142 | NA                                          | NA                | 2-Pyrrolidinone                          | C11118               |
+|   59_pos |         10.270 | NA                                          | NA                | Piperidine                               | C01746               |
+|   60_pos |         10.758 | NA                                          | NA                | Piperidine                               | C01746               |
+| 1325_pos |         15.050 | 5-Aminopentanoic acid; LC-ESI-QTOF; MS2; CE | 5-Aminopentanoate | L-Valine;5-Aminopentanoic acid;Norvaline | C00183;C00431;C01799 |
 
 ### Keeping only annotated features
 
