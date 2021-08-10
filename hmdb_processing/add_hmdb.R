@@ -1,5 +1,5 @@
 # Function to add HMDB information
-add_hmdb <- function(metab_SE, hmdb, mass_tol) {
+add_hmdb <- function(metab_SE, hmdb, mass_tol = 0.002) {
   # Set ion mass
   ion <- 1.007276
   # Transform everything into a vector for faster looping
