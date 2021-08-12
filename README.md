@@ -295,18 +295,9 @@ See our guide for annotation of your MS-DIAL data in R using the HMDB database [
 
 Now that we have a `SummarizedExperiment` object, filtered for features with at least one annotation, we need to manually curate the spectra within MS-DIAL. While the `pmp` pre-processing pipeline does a good job at filtering your LCMS datasets for the best quality data, it is not able to discern the quality of the spectra directly. It is **important** to manually curate the data **before** continuing with downstream analysis, as the poor quality data will affect ordination and statistical tests.
 
-The most efficient method for manual curation is to save the alignment ID, names, and ionisation mode information element from your `SummarizedExperiment` object, for example:
+The most efficient method for manual curation is to save the alignment ID, names, and ionisation mode information element from your `SummarizedExperiment` object, for example (using the function [`save_curation_table()`](https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/save_curation_table.R)):
 
 ```R
-# Function to save a curation table
-save_curation_table <- function(metab_SE, filename) {
-  df <- data.frame('Alignment_ID' = metab_SE@elementMetadata$`info.Alignment ID`,
-                   'Metabolite_name' = metab_SE@elementMetadata$`info.Metabolite name`,
-                   'Ionisation' = metab_SE@elementMetadata$ionisation,
-                   'shortname' = metab_SE@elementMetadata$shortname)
-  write_csv(df, file = filename)
-}
-
 # Save the curation table
 save_curation_table(metab_stool_glog, here::here('data', 'manual_curation', 'stool_curation.csv'))
 ```
