@@ -291,6 +291,40 @@ Unlike secondary MS/MS annotation with GNPS, this step occurs following pre-prep
 
 See our guide for annotation of your MS-DIAL data in R using the HMDB database [here](https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/tree/main/hmdb_processing).
 
+## Manual curation of peaks
+
+Now that we have a `SummarizedExperiment` object, filtered for features with at least one annotation, we need to manually curate the spectra within MS-DIAL. While the `pmp` pre-processing pipeline does a good job at filtering your LCMS datasets for the best quality data, it is not able to discern the quality of the spectra directly. It is **important** to manually curate the data **before** continuing with downstream analysis, as the poor quality data will affect ordination and statistical tests.
+
+The most efficient method for manual curation is to save the alignment ID, names, and ionisation mode information element from your `SummarizedExperiment` object, for example:
+
+```R
+# Function to save a curation table
+save_curation_table <- function(metab_SE, filename) {
+  df <- data.frame('Alignment_ID' = metab_SE@elementMetadata$`info.Alignment ID`,
+                   'Metabolite_name' = metab_SE@elementMetadata$`info.Metabolite name`,
+                   'Ionisation' = metab_SE@elementMetadata$ionisation,
+                   'shortname' = metab_SE@elementMetadata$shortname)
+  write_csv(df, file = filename)
+}
+
+# Save the curation table
+save_curation_table(metab_stool_glog, here::here('data', 'manual_curation', 'stool_curation.csv'))
+```
+
+Now that we have our `stool_curation.csv` file, we can import it into Google Sheets and add an additional column named `quality_peak` that is filled with tickboxes.
+
+Now, when we return to MS-DIAL, we can check the peaks using the `Alignment_ID` values as our guide, and check the tickboxes of those that are accepted.
+
+Once we have completed this task for both the positive and negative ionisation modes, we can save the Google sheet as a `.csv` file, and import it into R. Thankfully, it is very easy to filter `SummarizedExperiment` objects, and we can do this using our `quality_peak` column.
+
+```R
+# Load quality data
+metab_stool_quality <- read_csv(here::here('data', 'manual_curation', 'stool_curated.csv'))
+
+# Filter the features using the TRUE/FALSE quality_peak column
+metab_stool_glog <- metab_stool_glog[metab_stool_quality$quality_peak,]
+```
+
 ## Downstream analysis
 
 Once you have reached this point, you should have a `SummarizedExperiment` object (complete with sample and feature metadata) that contains only annotated features, with intensity values that have been normalised and transformed, and are ready for downstream analysis in R.
