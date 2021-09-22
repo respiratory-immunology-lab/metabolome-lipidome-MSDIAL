@@ -13,7 +13,8 @@ compare_annotations <- function(metab_SE) {
                                  'HMDB_annotation' = rowData(metab_SE)$HMDB,
                                  'KEGG_annotation' = rowData(metab_SE)$KEGG) %>%
     column_to_rownames(var = 'Alignment.ID') %>%
-    mutate(MSDIAL_annotation = replace(MSDIAL_annotation, MSDIAL_annotation == 'Unknown', NA)) %>%
+    mutate(MSDIAL_annotation = replace(MSDIAL_annotation, MSDIAL_annotation == 'Unknown', NA),
+           KEGG_annotation= replace(KEGG_annotation, KEGG_annotation == '', NA)) %>%
     filter(!is.na(MSDIAL_annotation) | !is.na(GNPS_annotation) | !is.na(HMDB_annotation) | !is.na(KEGG_annotation))
   
   # Return the data.frame
