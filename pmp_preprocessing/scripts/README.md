@@ -119,6 +119,12 @@ FALSE  TRUE
  9248   181 
 ```
 
+### Troubleshooting
+
+#### No metadata showing up
+
+If you are finding that you have no metadata included despite selecting a `data.frame`, double check that you set the correct `samples_key` argument in your call to `pmp_preprocess()`. If you do not set this argument correctly, then all of the metadata rows are removed prior to integration into the `SummarizedExperiment` object.
+
 ## Rights
 
 * Copyright (c) 2021 Respiratory Immunology lab, Monash University, Melbourne, Australia.
