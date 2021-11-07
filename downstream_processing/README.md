@@ -49,7 +49,7 @@ metab_stool_limma_age$volcano_plot
 write.csv(metab_stool_limma_age$limma_significant, here::here('output', 'limma', 'stool', 'stool_limma_age_significant.csv'))
 ```
 
-<img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/downstream_processing/assets/test_volcano.png">
+<img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/downstream_processing/assets/test_volcano.png">
 
 #### Plot the signficant features
 
@@ -85,7 +85,7 @@ metab_stool_limma_age_top12 <- annotate_figure(metab_stool_limma_age_top12,
                                                                face = 'bold', size = 12))
 ```
 
-<img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/downstream_processing/assets/test_limma_age_top12.png">
+<img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/downstream_processing/assets/test_limma_age_top12.png">
 
 Another thing we can do here is combine this top 12 plot with the volcano plot produced by the `metab_limma_continuous()` function to generate a nice figure. We can do this simply by using `ggarrange()`. You will probably need to reduce the size of your top 12 plot elements (i.e. point size and text size) for this step though; setting `text_size = 5` and `geom_point_size = 1` within your function call to `metab_limma_plot_all_continuous()` should do the trick.
 
@@ -97,4 +97,4 @@ Figure_stool_age_metab.1 <- ggarrange(NULL, metab_stool_limma_age$volcano_plot, 
 Figure_stool_age_metab <- ggarrange(Figure_stool_age_metab.1, metab_stool_limma_age_top12, nrow = 1, widths = c(0.5, 0.5))
 ```
 
-<img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/downstream_processing/assets/test_age_metab.png">
+<img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/downstream_processing/assets/test_age_metab.png">
