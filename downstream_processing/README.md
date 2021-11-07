@@ -49,7 +49,7 @@ metab_stool_limma_age$volcano_plot
 write.csv(metab_stool_limma_age$limma_significant, here::here('output', 'limma', 'stool', 'stool_limma_age_significant.csv'))
 ```
 <p align="center">
-    <img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/downstream_processing/assets/test_volcano.png" style="max-width: 80%">
+    <img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/downstream_processing/assets/test_volcano.png" style="max-width: 80%;">
 </p>
 
 #### Plot the signficant features
