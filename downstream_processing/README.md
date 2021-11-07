@@ -72,7 +72,7 @@ The `metab_limma_plot_continuous.R` script contains two functions: `metab_limma_
 
 Only the function for the individual plot requires the row number of the feature you want to plot; this is the row of the `limma_significant` data.frame inside the `metab_limma_cont_object`. The `metab_limma_plot_all_continuous()` function will plot each of the significant features and add them to a list of plots from which you can select either an individual plot or multiple plots to combine together. From this perspective, plotting all significant features saves time, and you are still able to select individual plots later.
 
-For example, with the stool metabolomics dataset, we will create a plot list of all significant features, then select the top 12 (plot list elements 1-12) to combine using `ggarrange()`, and then annotate this using the `ggpubr` function [`annotate_figure()`](https://www.rdocumentation.org/packages/ggpubr/versions/0.4.0/topics/annotate_figure).
+For example, with the stool metabolomics dataset, we will create a plot list of all significant features, then select the top 12 (plot list elements 1-12) to combine using [`ggarrange()`](https://www.rdocumentation.org/packages/ggpubr/versions/0.4.0/topics/ggarrange), and then annotate this using the `ggpubr` function [`annotate_figure()`](https://www.rdocumentation.org/packages/ggpubr/versions/0.4.0/topics/annotate_figure).
 
 ```r
 # Plot time vs metabolite
