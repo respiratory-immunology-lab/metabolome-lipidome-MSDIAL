@@ -23,8 +23,8 @@ The `metab_limma_continuous()` function takes a `SummarizedExperiment` object an
 - `logFC_threshold`: (default: 1) the minimum log2 fold-change that is considered scientifically meaningful.
 - `volc_plot_title`: a custom title for the volcano plot.
 - `volc_plot_subtitle`: a custom subtitle for the volcano plot.
-- `volc_plot_xlab`: a custom label for the x-axis.
-- `volc_plot_ylab`: a custom label for the y-axis.
+- `volc_plot_xlab`: a custom label for the x-axis of the volcano plot.
+- `volc_plot_ylab`: a custom label for the y-axis of the volcano plot.
 
 ##### Usage
 
@@ -48,3 +48,53 @@ metab_stool_limma_age$volcano_plot
 # Save significant values to file
 write.csv(metab_stool_limma_age$limma_significant, here::here('output', 'limma', 'stool', 'stool_limma_age_significant.csv'))
 ```
+
+<img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/downstream_processing/assets/test_volcano.png">
+
+#### Plot the signficant features
+
+The `metab_limma_plot_continuous.R` script contains two functions: `metab_limma_plot_indiv_continuous()` and `metab_limma_plot_all_continuous()`. The second function wraps around the first one to handle the creation of multiple plots, and will probably be the most useful for plotting the top significant features quickly.
+
+##### Arguments
+
+- `metab_limma_cont_object`: an instance of an object output by the `metab_limma_continuous()` function above.
+- `feature_num`: (only available in the `metab_limma_plot_indiv_continuous()` function) the row number of the feature in the `limma_significant` data.frame of the `metab_limma_cont_object`.
+- `plot_subtitle`: a custom subtitle for the plot.
+- `plot_x_label`: a custom label for the x-axis of the plot.
+- `plot_y_label`: a custom label for th y-axis of the plot.
+- `text_size`: (default: 8) the font size of the plot text.
+- `geom_point_fill`: (default: 'black') the colour of the scatter plot dots.
+- `geom_point_alpha`: (default: 0.7) the opacity of the scatter plot dots.
+- `geom_point_size`: (default: 2) the size of the scatter plot dots.
+
+##### Usage
+
+Only the function for the individual plot requires the row number of the feature you want to plot; this is the row of the `limma_significant` data.frame inside the `metab_limma_cont_object`. The `metab_limma_plot_all_continuous()` function will plot each of the significant features and add them to a list of plots from which you can select either an individual plot or multiple plots to combine together. From this perspective, plotting all significant features saves time, and you are still able to select individual plots later.
+
+For example, with the stool metabolomics dataset, we will create a plot list of all significant features, then select the top 12 (plot list elements 1-12) to combine using `ggarrange()`, and then annotate this using the `ggpubr` function [`annotate_figure()`](https://www.rdocumentation.org/packages/ggpubr/versions/0.4.0/topics/annotate_figure).
+
+```r
+# Plot time vs metabolite
+metab_stool_limma_age_plots <- metab_limma_plot_all_continuous(metab_limma_cont_object = metab_stool_limma_age, 
+                                                               plot_x_label = 'Age (years)')
+
+# Arrange the first 12 most significant into a single plot
+metab_stool_limma_age_top12 <- ggarrange(plotlist = metab_stool_limma_age_plots[1:12], nrow = 3, ncol = 4)
+metab_stool_limma_age_top12 <- annotate_figure(metab_stool_limma_age_top12, 
+                                               top = text_grob('Age-Related Metabolites - Top 12 Differential Intensity Stool Metabolites',
+                                                               face = 'bold', size = 12))
+```
+
+<img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/downstream_processing/assets/test_limma_age_top12.png">
+
+Another thing we can do here is combine this top 12 plot with the volcano plot produced by the `metab_limma_continuous()` function to generate a nice figure. We can do this simply by using `ggarrange()`. You will probably need to reduce the size of your top 12 plot elements (i.e. point size and text size) for this step though; setting `text_size = 5` and `geom_point_size = 1` within your function call to `metab_limma_plot_all_continuous()` should do the trick.
+
+```r
+# Arrange the volcano plot with some vertical buffer space
+Figure_stool_age_metab.1 <- ggarrange(NULL, metab_stool_limma_age$volcano_plot, NULL, nrow = 3, heights = c(0, 0.6, 0))
+
+# Arrange the volcano plot and the top 12 plot next to each other
+Figure_stool_age_metab <- ggarrange(Figure_stool_age_metab.1, metab_stool_limma_age_top12, nrow = 1, widths = c(0.5, 0.5))
+```
+
+<img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/downstream_processing/assets/test_age_metab.png">
