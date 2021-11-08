@@ -96,3 +96,9 @@ Figure_stool_age_metab <- ggarrange(metab_stool_limma_age$volcano_plot, metab_st
 ```
 
 <img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/downstream_processing/assets/test_age_metab.png">
+
+### Categorical explanatory variable
+
+#### Run the limma analysis
+
+Like the continuous function, the `metab_limma_categorical()` function takes a `SummarizedExperiment` object as input. This function however takes a categorical variable as its secondary input: `metadata_var`; this must be a string value that matches the column name of a categorical metadata value in your `SummarizedExperiment` object. You can place conditions on your metadata using the `metadata_condition` variable, which can be useful if you want to restrict your analysis to a specific time-frame for example.
