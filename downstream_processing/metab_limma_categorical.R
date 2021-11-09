@@ -1,7 +1,7 @@
 ############################################################################################
 # Copyright (c) 2021 - Respiratory Immunology Lab, Monash University, Melbourne, Australia #
 # Author: Matthew Macowan                                                                  #
-# This script is provided under the MIT licence (see LICENSE.txt for more information)     #
+# This script is provided under the MIT licence (see LICENSE.txt for details)              #
 ############################################################################################
 
 # Define function to handle categorical limma testing
