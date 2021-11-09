@@ -203,3 +203,13 @@ Figure_stool_bf_metab <- ggarrange(metab_stool_limma_bf_year1$volcano_plots$`Yes
 ```
 
 <img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/downstream_processing/assets/test_bf_year1_metab.png">
+
+## Citation
+
+If you used these tools in a publication, please mention its URL.
+
+## Rights
+
+- Copyright (c) 2021 Respiratory Immunology lab, Monash University, Melbourne, Australia.
+- Licence: The scripts in this folder are provided under the MIT licence (see LICENSE.txt for details).
+- Authors: Matthew Macowan

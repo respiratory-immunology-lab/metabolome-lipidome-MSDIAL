@@ -1,3 +1,10 @@
+############################################################################################
+# Copyright (c) 2021 - Respiratory Immunology Lab, Monash University, Melbourne, Australia #
+# Author: Matthew Macowan                                                                  #
+# This script is provided under the MIT licence (see LICENSE.txt for more information)     #
+############################################################################################
+
+# Define custom function to handle continuous limma testing
 metab_limma_continuous <- function(metab_SE, metadata_var, model_matrix = NULL, rownames = NULL, 
                                    adj_pval_threshold = 0.05, logFC_threshold = 1,
                                    volc_plot_title = NULL, volc_plot_subtitle = NULL,

@@ -1,3 +1,10 @@
+############################################################################################
+# Copyright (c) 2021 - Respiratory Immunology Lab, Monash University, Melbourne, Australia #
+# Author: Matthew Macowan                                                                  #
+# This script is provided under the MIT licence (see LICENSE.txt for more information)     #
+############################################################################################
+
+# Define function to handle categorical limma testing
 metab_limma_categorical <- function(metab_SE, metadata_var, metadata_condition = NULL, model_matrix = NULL, 
                                     contrast_matrix = NULL, adjust_method = 'BH', rownames = NULL, adj_pval_threshold = 0.05, 
                                     logFC_threshold = 1, legend_metadata_string = NULL,

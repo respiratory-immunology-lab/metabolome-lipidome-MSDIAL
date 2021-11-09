@@ -1,3 +1,9 @@
+############################################################################################
+# Copyright (c) 2021 - Respiratory Immunology Lab, Monash University, Melbourne, Australia #
+# Author: Matthew Macowan                                                                  #
+# This script is provided under the MIT licence (see LICENSE.txt for more information)     #
+############################################################################################
+
 # Define function to plot individual significant features from the limma categorical wrapper function
 metab_limma_plot_indiv_categorical <- function(metab_limma_cat_object, metab_limma_cat_comparison, feature_num, 
                                                plot_subtitle = NULL, plot_x_lab = NULL, plot_y_lab = NULL, 

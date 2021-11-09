@@ -1,3 +1,9 @@
+############################################################################################
+# Copyright (c) 2021 - Respiratory Immunology Lab, Monash University, Melbourne, Australia #
+# Author: Matthew Macowan                                                                  #
+# This script is provided under the MIT licence (see LICENSE.txt for more information)     #
+############################################################################################
+
 # Plot continuous metadata variable vs metabolite
 metab_limma_plot_indiv_continuous <- function(metab_limma_cont_object, feature_num, plot_subtitle = NULL, 
                                               plot_x_label = NULL, plot_y_label = NULL, 
