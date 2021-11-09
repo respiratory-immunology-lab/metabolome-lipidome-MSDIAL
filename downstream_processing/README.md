@@ -52,7 +52,7 @@ write.csv(metab_stool_limma_age$limma_significant, here::here('output', 'limma',
     <img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/downstream_processing/assets/test_volcano.png" height="500px">
 </p>
 
-_Metabolite names are printed using `geom_text_repel()`, but have been omitted in this tutorial._
+_Metabolite names are printed using `geom_text_repel()`, but have been omitted in this documentation._
 
 #### Plot the signficant features
 
@@ -128,3 +128,22 @@ The minimum inputs for the `metab_limma_categorical()` function are a `Summarize
 
 An example with the stool metabolomics dataset:
 
+```r
+# Run custom limma function on metabolites vs breastfeeding information
+metab_stool_limma_bf_year1 <- metab_limma_categorical(metab_SE = metab_stool_glog,
+                                                      metadata_var = 'Breastfeeding_YN',
+                                                      metadata_condition = metab_stool_glog@metadata$metadata$days < 365,
+                                                      legend_metadata_string = 'Breastfeeding',
+                                                      volc_plot_title = 'Differential Intensity Metabolites - Breastfeeding')
+
+# View the "yes vs no" volcano plot
+metab_stool_limma_bf_year1$volcano_plots$`Yes-No`
+
+# Save significant values to file
+write.csv(metab_stool_limma_bf_year1$limma_significant$`Yes-No`, 
+          here::here('output', 'limma', 'stool', 'stool_limma_bf_year1_yesno_significant.csv'))
+```
+
+<p align="center">
+    <img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/downstream_processing/assets/test_breastfeeding_year1_volcano.png" height="500px">
+</p>
