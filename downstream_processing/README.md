@@ -132,7 +132,7 @@ An example with the stool metabolomics dataset:
 # Run custom limma function on metabolites vs breastfeeding information
 metab_stool_limma_bf_year1 <- metab_limma_categorical(metab_SE = metab_stool_glog,
                                                       metadata_var = 'Breastfeeding_YN',
-                                                      metadata_condition = metab_stool_glog@metadata$metadata$days < 365,
+                                                      metadata_condition = metab_stool_glog@metadata$metadata$days < 365, # limit data to samples from year 1
                                                       legend_metadata_string = 'Breastfeeding',
                                                       volc_plot_title = 'Differential Intensity Metabolites - Breastfeeding')
 
@@ -147,3 +147,59 @@ write.csv(metab_stool_limma_bf_year1$limma_significant$`Yes-No`,
 <p align="center">
     <img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/downstream_processing/assets/test_breastfeeding_year1_volcano.png" height="500px">
 </p>
+
+#### Plot the signficant features
+
+Just like the `metab_limma_plot_continuous.R` script, the `metab_limma_plot_categorical.R` script contains two functions: `metab_limma_plot_indiv_categorical()` and `metab_limma_plot_all_categorical()`. Likewise, the second function wraps around the first one to handle the creation of multiple plots, and will probably be the most useful.
+
+##### Arguments
+
+- `metab_limma_cat_object`: an instance of an object output by the `metab_limma_categorical()` function above.
+- `metab_limma_cat_comparison`: a string value indicating which categorical comparison you want to plot.
+- `feature_num`: (only available in the `metab_limma_plot_indiv_categorical()` function) the row number of the feature in the `limma_significant` data.frame of the `metab_limma_cat_object`.
+- `plot_subtitle`: a custom subtitle for the plot.
+- `plot_x_lab`: a custom label for the x-axis of the plot.
+- `plot_y_lab`: a custom label for the y-axis of the plot.
+- `plot_stat_comparisons`: a list of length-2 vectors. The entries in the vector are either the names of 2 values on the x-axis or the 2 integers that correspond to the index of the groups of interest, to be compared (see [`stat_compare_means`](https://www.rdocumentation.org/packages/ggpubr/versions/0.4.0/topics/stat_compare_means)).
+- `plot_fill_name`: an optional string value to rename the legend title.
+- `text_size`: (default: 8) the font size of the plot text.
+- `pval_text_size`: (default: 2) the font size of the p-value text.
+
+##### Usage
+
+Only the function for the individual plot requires the row number of the feature you want to plot; this is the row of the `limma_significant` data.frame inside the `metab_limma_cat_object`. The `metab_limma_plot_all_categorical()` function will plot each of the significant features and add them to a list of plots from which you can select either an individual plot or multiple plots to combine together. 
+
+You need to input the name (as a string value) of the categorical comparison you want to plot.
+You will need to provide a list of the statistical comparisons you want using a list of length-2 vectors (see [`stat_compare_means`](https://www.rdocumentation.org/packages/ggpubr/versions/0.4.0/topics/stat_compare_means) for details).
+
+For example, with the stool metabolomics dataset, and the significant values between `Yes` and `No` breastfeeding, we will create a plot list of all significant features, then select the top 12 (plot list elements 1-12) to combine using [`ggarrange()`](https://www.rdocumentation.org/packages/ggpubr/versions/0.4.0/topics/ggarrange), and then annotate this using the `ggpubr` function [`annotate_figure()`](https://www.rdocumentation.org/packages/ggpubr/versions/0.4.0/topics/annotate_figure).
+
+```r
+# Make a list of plots for the significant breastfeeding metabolites
+metab_stool_bf_plotlist <- metab_limma_plot_all_categorical(metab_limma_cat_object = metab_stool_limma_bf_year1,
+                                                            metab_limma_cat_comparison = 'Yes-No',
+                                                            plot_x_lab = 'Breastfed',
+                                                            plot_y_lab = 'Intensity',
+                                                            plot_stat_comparisons = list(c('Yes', 'No'), c('No', 'Mixed'), c('Yes', 'Mixed')),
+                                                            plot_fill_name = 'Breastfed',
+                                                            text_size = 6.5, 
+                                                            pval_text_size = 2.5)
+
+# Arrange the top 12 metabolites in a single figure
+metab_stool_bf_top12_plots <- ggarrange(plotlist = metab_stool_bf_plotlist[1:12], nrow = 3, ncol = 4)
+metab_stool_bf_top12_plots <- annotate_figure(metab_stool_bf_top12_plots, 
+                                              top = text_grob('Breastfeeding (First Year of Life) - Top 12 Differential Intensity Stool Metabolites',
+                                              face = 'bold', size = 12))
+```
+
+<img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/downstream_processing/assets/test_breastfeeding_year1_top12.png">
+
+
+Once again, as with the continuous example, we can combine this top 12 plot with the volcano plot produced by the `metab_limma_categorical()` function to generate a nice figure. We can do this simply by using `ggarrange()`. You will probably need to reduce the size of your top 12 plot text elements (i.e. text size and p-value text size) for this step though; setting `text_size = 5` and `pval_text_size = 1.6` within your function call to `metab_limma_plot_all_categorical()` should do the trick.
+
+```r
+# Arrange the volcano plot and the top 12 plot next to each other
+Figure_stool_bf_metab <- ggarrange(metab_stool_limma_bf_year1$volcano_plots$`Yes-No`, metab_stool_bf_top12_plots, nrow = 1, widths = c(0.5, 0.5))
+```
+
+<img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/downstream_processing/assets/test_bf_year1_metab.png">
