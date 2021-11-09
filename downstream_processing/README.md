@@ -211,5 +211,5 @@ If you used these scripts in a publication, please mention this repository's URL
 ## Rights
 
 - Copyright (c) 2021 Respiratory Immunology lab, Monash University, Melbourne, Australia.
-- Licence: The scripts in this folder are provided under the MIT licence (see LICENSE.txt for details).
+- Licence: The scripts in this folder are provided under the MIT license (see LICENSE.txt for details).
 - Authors: Matthew Macowan
