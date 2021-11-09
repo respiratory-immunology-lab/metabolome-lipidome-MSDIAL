@@ -124,7 +124,7 @@ Like the continuous function, the `metab_limma_categorical()` function takes a `
 
 ##### Usage
 
-The minimum inputs for the `metab_limma_categorical()` function are a `SummarizedExperiment` object (e.g. generated through the `pmp_preprocess()` function) and the name of a categorical metadata column. In typical usage, you would not provide a model matrix or a constrast matrix, as the function will generate these for you. Please provide rownames if you do not have a metadata column named `shortname`. The default method for multiple testing correction of p-values is `BH` (Benjamini-Hochberg correction), but can be changed if desired. If you want different significance and log2 fold-change thresholds, you can override the default values.
+The minimum inputs for the `metab_limma_categorical()` function are a `SummarizedExperiment` object (e.g. generated through the `pmp_preprocess()` function) and the name of a categorical metadata column. In typical usage, you would not provide a model matrix or a contrast matrix, as the function will generate these for you. Please provide rownames if you do not have a metadata column named `shortname`. The default method for multiple testing correction of p-values is `BH` (Benjamini-Hochberg correction), but can be changed if desired. If you want different significance and log2 fold-change thresholds, you can override the default values.
 
 An example with the stool metabolomics dataset:
 
