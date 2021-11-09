@@ -206,7 +206,7 @@ Figure_stool_bf_metab <- ggarrange(metab_stool_limma_bf_year1$volcano_plots$`Yes
 
 ## Citation
 
-If you used these tools in a publication, please mention its URL.
+If you used these scripts in a publication, please mention this repository's URL.
 
 ## Rights
 
