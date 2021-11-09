@@ -320,6 +320,8 @@ metab_stool_glog <- metab_stool_glog[metab_stool_quality$quality_peak,]
 
 Once you have reached this point, you should have a `SummarizedExperiment` object (complete with sample and feature metadata) that contains only annotated features, with intensity values that have been normalised and transformed, and are ready for downstream analysis in R.
 
+Please visit the [`downstream_processing`](https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/tree/main/downstream_processing) page for tools and a starting point for downstream analysis.
+
 ## Rights
 
 * Copyright (c) 2021 Respiratory Immunology lab, Monash University, Melbourne, Australia.
