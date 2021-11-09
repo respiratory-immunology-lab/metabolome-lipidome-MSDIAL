@@ -103,7 +103,8 @@ metab_limma_continuous <- function(metab_SE, metadata_var, model_matrix = NULL, 
                       test_variable = test_var,
                       limma_significant = metab_limma_top,
                       all_values = metab_limma_all,
-                      volcano_plot = metab_limma_volc)
+                      volcano_plot = metab_limma_volc,
+                      limma_type = 'continuous')
   
   # Return the list
   return_list

@@ -231,7 +231,8 @@ metab_limma_categorical <- function(metab_SE, metadata_var, metadata_condition =
                       limma_significant = metab_limma_signif,
                       limma_all = metab_limma_all,
                       volcano_plots = volcano_plots,
-                      venn_diagram = venn_diagram)
+                      venn_diagram = venn_diagram,
+                      limma_type = 'categorical')
   
   # Return the list
   return_list
