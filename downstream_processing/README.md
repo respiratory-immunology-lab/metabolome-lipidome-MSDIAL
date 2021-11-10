@@ -210,23 +210,7 @@ Figure_stool_bf_metab <- ggarrange(metab_stool_limma_bf_year1$volcano_plots$`Yes
 
 The `metab_limma_plot_heatmap()` function takes in the output of either `metab_limma_continuous()` or `metab_limma_categorical()`, along with a set of additional tuneable parameters, and wraps around the [`ComplexHeatmap::Heatmap()`](https://www.rdocumentation.org/packages/ComplexHeatmap/versions/1.10.2/topics/Heatmap) function to produce heatmap outputs of the significantly DA features from the limma test. 
 
-#### Usage
-
-The function will generate a heatmap with a `metab_limma_object` as the sole input, however there are a number of customisations that will improve the heatmap.
-
-The function will detect which type of `metab_limma` object you have input by looking at its `limma_type` list element, and will use the appropriate method for generating the heatmap. For a continuous test variable, only one heatmap will be output. But for a categorical test variable, one heatmap will be output for each of the comparisons.
-
-Further, the function will return two versions of each heatmap. The first is the standard object of class `Heatmap`, and the second is a `'grob'` object that is `ggplot2`-compatible, and can be used later with `ggarrange()`.
-
-The size of each heatmap is determined by the number of features, and whether or not you choose to display the column names (the default option is to not show the column names). If a heatmap has no features, then it will not be saved or added to the heatmap list.
-
-You can specify alternative color ramps for your continuous test variable (using [`circlize::colorRamp2()`](https://www.rdocumentation.org/packages/circlize/versions/0.4.13/topics/colorRamp2)), or a named colour vector for your categorical test variable. You can also specify additional metadata columns to plot at the top of the heatmap, and specify colour schemes for these values; this can require a fair amount of code depending on the number of extra annotations, but can help improve on the default colours.
-
-By default, the function will order your test variable (either in increasing numerical order or in alphabetical order of test variable levels), but this can be turned off by setting the `heatmap_order_columns_by_test_variable` argument to false.
-
-The default functionality will also save your heatmap(s) to both a `.pdf` and `.png` file. You need to provide a filepath (without the file extension) in order for this to work. You can disable this option by setting `save_to_pdf` and `save_to_png` to FALSE, or by simply omitting the filepath.
-
-##### Arguments
+#### Arguments
 
 - `metab_limma_object`: an instance of an object output by either the `metab_limma_continuous()` or `metab_limma_categorical()` function.
 - `metadata_to_include`: a character vector containing the names of columns that exist in the `input_metadata` element of the `metab_limma_object`.
@@ -245,6 +229,97 @@ The default functionality will also save your heatmap(s) to both a `.pdf` and `.
 - `save_to_pdf`: (default: TRUE) choose whether to save to a .pdf file (requires the `output_filename` to be set)
 - `save_to_png`: (default: TRUE) choose whether to save to a .png file (requires the `output_filename` to be set)
 - `output_filename`: the output filename (both the path and name of the file); don't append the file extension (i.e. .pdf or .png) - the function will add these for you.
+
+#### Usage
+
+The function will generate a heatmap with a `metab_limma_object` as the sole input, however there are a number of customisations that will improve the heatmap.
+
+The function will detect which type of `metab_limma` object you have input by looking at its `limma_type` list element, and will use the appropriate method for generating the heatmap. For a continuous test variable, only one heatmap will be output. But for a categorical test variable, one heatmap will be output for each of the comparisons.
+
+Further, the function will return two versions of each heatmap. The first is the standard object of class `Heatmap`, and the second is a `'grob'` object that is `ggplot2`-compatible, and can be used later with `ggarrange()`.
+
+The size of each heatmap is determined by the number of features, and whether or not you choose to display the column names (the default option is to not show the column names). If a heatmap has no features, then it will not be saved or added to the heatmap list.
+
+You can specify alternative color ramps for your continuous test variable (using [`circlize::colorRamp2()`](https://www.rdocumentation.org/packages/circlize/versions/0.4.13/topics/colorRamp2)), or a named colour vector for your categorical test variable. You can also specify additional metadata columns to plot at the top of the heatmap, and specify colour schemes for these values; this can require a fair amount of code depending on the number of extra annotations, but can help improve on the default colours.
+
+By default, the function will order your test variable (either in increasing numerical order or in alphabetical order of test variable levels), but this can be turned off by setting the `heatmap_order_columns_by_test_variable` argument to false.
+
+The default functionality will also save your heatmap(s) to both a `.pdf` and `.png` file. You need to provide a filepath (without the file extension) in order for this to work. You can disable this option by setting `save_to_pdf` and `save_to_png` to FALSE, or by simply omitting the filepath.
+
+##### Example with a continuous test variable
+
+For the first example, we will return to the stool metabolomics dataset and the output from `metab_limma_continuous()`.
+
+We will first generate some colours using [`RColorBrewer`](https://www.rdocumentation.org/packages/RColorBrewer/versions/1.1-2/topics/RColorBrewer), and create a named vector that matches up to the `input_metadata` variable: `patient`. Because we know we want to rename this variable to `'Patient'` for nicer formatting, we set the first `extra_colours` list element to a name of `'Patient'` and its value to that of the named vector we just created. From there, we can pass the `extra_colours` object into the `metadata_colours` argument.
+
+In the `column_annotation_labels` argument, we tidy up the formatting for the column annotation labels, and set these to `'Patient'` and `'Age (years)'`. Remember: the test variable will always be last, and then the additional labels will be in the order that you have set in the `metadata_to_include` argument.
+
+Another thing we alter here that may be less obvious is the legend parameters for the `'Patient'` variable. We can pass anything in to the `heatmap_annotation_legend_param` argument as we can to the `ComplexHeatmap::HeatmapAnnotation()` `annotation_legend_param` argument (these are provided to the argument using a list with names mapped to the annotation elements we want to change). So, here we have a list with an element called `'Patient'`, and that has a list of legend parameters, including setting the number of columns to `2`, and making the elements split into 2 columns row-wise (`by_row = TRUE`).
+
+```r
+# Define colours for extra metadata
+library(RColorBrewer)
+qual_col_pals <- brewer.pal.info[brewer.pal.info$category == 'qual',]
+col_vector <- unique(unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals))))
+
+patients <- levels(metab_stool_limma_age$input_metadata$patient)
+patient_colour_vector <- col_vector[1:length(patients)]
+names(patient_colour_vector) <- levels(metab_stool_limma_age$input_metadata$patient)
+extra_colours <- list('Patient' = patient_colour_vector)
+
+# Run custom heatmap function
+metab_stool_limma_age_hm <- metab_limma_plot_heatmap(metab_limma_object = metab_stool_limma_age, 
+                                                     metadata_to_include = c('patient'), # has lower case name in the 'input_metadata'
+                                                     metadata_colours = extra_colours,
+                                                     column_annotation_labels = c('Patient', 'Age (years)'),
+                                                     heatmap_scale_name = 'Intensity',
+                                                     heatmap_column_title = 'Differential Intensity Metabolites',
+                                                     heatmap_row_title = 'Feature',
+                                                     heatmap_show_column_names = FALSE,
+                                                     heatmap_rowname_text_size = 8,
+                                                     heatmap_annotation_legend_param = list('Patient' = list(ncol = 2, # Example of annotation parameter
+                                                                                                             by_row = TRUE)),
+                                                     output_filename = here::here('figures', 'heatmaps', 'stool_metab_age_heatmap'))
+```
+
+<img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/downstream_processing/assets/stool_metab_age_heatmap.png">
+
+##### Example with a categorical test variable
+
+For the second example, the approach is essentially identical. This time we have a categorical test variable, and it is nice to choose some colours that will stay consistent and match the colour scheme we have been using previously (notably for the `metab_limma_plot_all_categorical()` function). 
+
+As such, we provide a named vector to the `categorical_colours` argument with names that map to the levels of the test variable. Here, we have used the first three values of the `pal_jama` palette, with the opacity set to `0.6`.
+
+```r
+# Define colours for extra metadata
+library(RColorBrewer)
+qual_col_pals <- brewer.pal.info[brewer.pal.info$category == 'qual',]
+col_vector <- unique(unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals))))
+
+patients <- levels(metab_stool_limma_bf_year1$input_metadata$patient)
+patient_colour_vector <- col_vector[1:length(patients)]
+names(patient_colour_vector) <- levels(metab_stool_limma_bf_year1$input_metadata$patient)
+extra_colours <- list('Patient' = patient_colour_vector)
+
+# Run custom heatmap function
+metab_stool_limma_bf_year1_hm <- metab_limma_plot_heatmap(metab_limma_object = metab_stool_limma_bf_year1, 
+                                                          metadata_to_include = c('patient'), 
+                                                          metadata_colours = extra_colours,
+                                                          column_annotation_labels = c('Patient', 'Breastfed'),
+                                                          categorical_colours = c('Yes' = pal_jama(alpha = 0.6)(3)[1], # Example of setting custom colours
+                                                                                  'No' = pal_jama(alpha = 0.6)(3)[2],
+                                                                                  'Mixed' = pal_jama(alpha = 0.6)(3)[3]),
+                                                          heatmap_scale_name = 'Intensity',
+                                                          heatmap_column_title = 'Differential Intensity Metabolites',
+                                                          heatmap_row_title = 'Feature',
+                                                          heatmap_show_column_names = FALSE,
+                                                          heatmap_rowname_text_size = 8,
+                                                          heatmap_annotation_legend_param = list('Patient' = list(ncol = 2,
+                                                                                                                  by_row = TRUE)),
+                                                          output_filename = here::here('figures', 'heatmaps', 'stool_metab_bf_year1_heatmap'))
+```
+
+<img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/downstream_processing/assets/stool_metab_bf_year1_heatmap.png">
 
 ## Citation
 
