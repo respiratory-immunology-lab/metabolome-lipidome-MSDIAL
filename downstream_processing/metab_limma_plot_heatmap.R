@@ -6,7 +6,8 @@
 
 ### HEATMAP FOR METAB_LIMMA_CONTINUOUS OUTPUT ###
 metab_limma_plot_heatmap_continuous <- function(metab_limma_cont_object, 
-                                                metadata_to_include = NULL, 
+                                                metadata_to_include = NULL,
+                                                metadata_colours = NULL, # must be a named list matching the 'column_annotation_labels' except the test variable
                                                 column_annotation_labels = NULL,
                                                 continuous_colour_ramp = NULL,
                                                 heatmap_scale_name = 'Intensity',
@@ -54,6 +55,9 @@ metab_limma_plot_heatmap_continuous <- function(metab_limma_cont_object,
   last_col <- colnames(colAnn)[length(colnames(colAnn))] # the test variable is in the last column
   colours <- list() # create an empty list
   colours[[last_col]] <- continuous_colours # use the name of the test variable as the list item name
+  if (!is.null(metadata_colours)) {
+    colours <- append(colours, metadata_colours)
+  }
   
   # Make heatmap annotation object
   if (!is.null(heatmap_annotation_legend_param)) {
@@ -117,6 +121,7 @@ metab_limma_plot_heatmap_continuous <- function(metab_limma_cont_object,
 ### HEATMAP FOR METAB_LIMMA_CATEGORICAL OUTPUT ###
 metab_limma_plot_heatmap_categorical <- function(metab_limma_cat_object, 
                                                  metadata_to_include = NULL, 
+                                                 metadata_colours = NULL, # must be a named list matching the 'column_annotation_labels' except the test variable
                                                  column_annotation_labels = NULL,
                                                  categorical_colours = NULL, # must be a named vector of length equal to test factor levels
                                                  heatmap_scale_name = 'Intensity',
@@ -162,6 +167,9 @@ metab_limma_plot_heatmap_categorical <- function(metab_limma_cat_object,
   last_col <- colnames(colAnn)[length(colnames(colAnn))] # the test variable is in the last column
   colours <- list() # create an empty list
   colours[[last_col]] <- categorical_colours # use the name of the test variable as the list item name
+  if (!is.null(metadata_colours)) {
+    colours <- append(colours, metadata_colours)
+  }
   
   # Make heatmap annotation object
   if (!is.null(heatmap_annotation_legend_param)) {
@@ -243,6 +251,7 @@ metab_limma_plot_heatmap_categorical <- function(metab_limma_cat_object,
 ### OUTER FUNCTION ###
 metab_limma_plot_heatmap <- function(metab_limma_object, 
                                      metadata_to_include = NULL, 
+                                     metadata_colours = NULL, # must be a named list matching the 'column_annotation_labels' except the test variable
                                      column_annotation_labels = NULL,
                                      continuous_colour_ramp = NULL, # made using the circlize::colorRamp2 function
                                      categorical_colours = NULL, # must be a named vector of length equal to test factor levels
@@ -260,6 +269,7 @@ metab_limma_plot_heatmap <- function(metab_limma_object,
   if (metab_limma_object$limma_type == 'continuous') {
     output <- metab_limma_plot_heatmap_continuous(metab_limma_cont_object = metab_limma_object, 
                                                   metadata_to_include = metadata_to_include, 
+                                                  metadata_colours = metadata_colours, # must be a named list matching the 'column_annotation_labels' except the test variable
                                                   column_annotation_labels = column_annotation_labels,
                                                   continuous_colour_ramp = continuous_colour_ramp,
                                                   heatmap_scale_name = heatmap_scale_name,
@@ -276,6 +286,7 @@ metab_limma_plot_heatmap <- function(metab_limma_object,
   if (metab_limma_object$limma_type == 'categorical') {
     output <- metab_limma_plot_heatmap_categorical(metab_limma_cat_object = metab_limma_object, 
                                                    metadata_to_include = metadata_to_include, 
+                                                   metadata_colours = metadata_colours, # must be a named list matching the 'column_annotation_labels' except the test variable
                                                    column_annotation_labels = column_annotation_labels,
                                                    categorical_colours = categorical_colours, # must be a named vector of length equal to test factor levels
                                                    heatmap_scale_name = heatmap_scale_name,
