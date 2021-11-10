@@ -16,6 +16,7 @@ metab_limma_plot_heatmap_continuous <- function(metab_limma_cont_object,
                                                 heatmap_order_columns_by_test_variable = TRUE,
                                                 heatmap_show_column_names = TRUE,
                                                 heatmap_rowname_text_size = 8,
+                                                heatmap_colname_text_size = 8,
                                                 heatmap_annotation_legend_param = NULL,
                                                 save_to_pdf = TRUE,
                                                 save_to_png = TRUE,
@@ -89,20 +90,28 @@ metab_limma_plot_heatmap_continuous <- function(metab_limma_cont_object,
                                                 rect_gp = gpar(col = 'white', lwd = 0.9),
                                                 column_order = column_order,
                                                 show_column_names = heatmap_show_column_names,
-                                                row_names_gp = gpar(fontsize = heatmap_rowname_text_size))
+                                                row_names_gp = gpar(fontsize = heatmap_rowname_text_size),
+                                                column_names_gp = gpar(fontsize = heatmap_colname_text_size))
+  
+  # Set output file width and height
+  if (heatmap_show_column_names) {
+    hm_height <- 0.1*nrow(input_data_subset) + 4
+  } else {
+    hm_height <- 0.1*nrow(input_data_subset) + 1
+  }
   
   # Save to files if requested
   if (isTRUE(save_to_pdf) & !is.null(output_filename)) {
     pdf(paste0(output_filename, '.pdf'), 
         width = 0.1*ncol(input_data_subset) + 4, 
-        height = 0.1*nrow(input_data_subset) + 1)
+        height = hm_height)
     draw(limma_cont_heatmap)
     dev.off()
   }
   if (isTRUE(save_to_png) & !is.null(output_filename)) {
     png(paste0(output_filename, '.png'), 
         width = 0.1*ncol(input_data_subset) + 4, 
-        height = 0.1*nrow(input_data_subset) + 1,
+        height = hm_height,
         units = 'in', res = 300)
     draw(limma_cont_heatmap)
     dev.off()
@@ -130,6 +139,7 @@ metab_limma_plot_heatmap_categorical <- function(metab_limma_cat_object,
                                                  heatmap_order_columns_by_test_variable = TRUE,
                                                  heatmap_show_column_names = TRUE,
                                                  heatmap_rowname_text_size = 8,
+                                                 heatmap_colname_text_size = 8,
                                                  heatmap_annotation_legend_param = NULL,
                                                  save_to_pdf = TRUE,
                                                  save_to_png = TRUE,
@@ -203,31 +213,39 @@ metab_limma_plot_heatmap_categorical <- function(metab_limma_cat_object,
       
       # Make the heatmap
       limma_cat_heatmap <- ComplexHeatmap::Heatmap(matrix = t(scale(t(input_data_subset))),
-                                                    name = heatmap_scale_name,
-                                                    column_title = heatmap_column_title,
-                                                    row_title = heatmap_row_title,
-                                                    column_labels = colnames(input_data_subset),
-                                                    top_annotation = colAnn_hm,
-                                                    rect_gp = gpar(col = 'white', lwd = 0.9),
-                                                    column_order = column_order,
-                                                    show_column_names = heatmap_show_column_names,
-                                                    row_names_gp = gpar(fontsize = heatmap_rowname_text_size))
+                                                   name = heatmap_scale_name,
+                                                   column_title = heatmap_column_title,
+                                                   row_title = heatmap_row_title,
+                                                   column_labels = colnames(input_data_subset),
+                                                   top_annotation = colAnn_hm,
+                                                   rect_gp = gpar(col = 'white', lwd = 0.9),
+                                                   column_order = column_order,
+                                                   show_column_names = heatmap_show_column_names,
+                                                   row_names_gp = gpar(fontsize = heatmap_rowname_text_size),
+                                                   column_names_gp = gpar(fontsize = heatmap_colname_text_size))
       
       # Add heatmap to list
       heatmap_list[[comp]] <- limma_cat_heatmap
+      
+      # Set output file width and height
+      if (heatmap_show_column_names) {
+        hm_height <- 0.1*nrow(input_data_subset) + 4
+      } else {
+        hm_height <- 0.1*nrow(input_data_subset) + 1
+      }
       
       # Save to files if requested
       if (isTRUE(save_to_pdf) & !is.null(output_filename)) {
         pdf(paste0(output_filename, comp, '.pdf'), 
             width = 0.1*ncol(input_data_subset) + 4, 
-            height = 0.1*nrow(input_data_subset) + 1)
+            height = hm_height)
         draw(limma_cat_heatmap)
         dev.off()
       }
       if (isTRUE(save_to_png) & !is.null(output_filename)) {
         png(paste0(output_filename, comp, '.png'), 
             width = 0.1*ncol(input_data_subset) + 4, 
-            height = 0.1*nrow(input_data_subset) + 1,
+            height = hm_height,
             units = 'in', res = 300)
         draw(limma_cat_heatmap)
         dev.off()
@@ -261,6 +279,7 @@ metab_limma_plot_heatmap <- function(metab_limma_object,
                                      heatmap_order_columns_by_test_variable = TRUE,
                                      heatmap_show_column_names = TRUE,
                                      heatmap_rowname_text_size = 8,
+                                     heatmap_colname_text_size = 8,
                                      heatmap_annotation_legend_param = NULL,
                                      save_to_pdf = TRUE,
                                      save_to_png = TRUE,
@@ -278,6 +297,7 @@ metab_limma_plot_heatmap <- function(metab_limma_object,
                                                   heatmap_order_columns_by_test_variable = heatmap_order_columns_by_test_variable,
                                                   heatmap_show_column_names = heatmap_show_column_names,
                                                   heatmap_rowname_text_size = heatmap_rowname_text_size,
+                                                  heatmap_colname_text_size = heatmap_colname_text_size,
                                                   heatmap_annotation_legend_param = heatmap_annotation_legend_param,
                                                   save_to_pdf = save_to_pdf,
                                                   save_to_png = save_to_png,
@@ -295,6 +315,7 @@ metab_limma_plot_heatmap <- function(metab_limma_object,
                                                    heatmap_order_columns_by_test_variable = heatmap_order_columns_by_test_variable,
                                                    heatmap_show_column_names = heatmap_show_column_names,
                                                    heatmap_rowname_text_size = heatmap_rowname_text_size,
+                                                   heatmap_colname_text_size = heatmap_colname_text_size,
                                                    heatmap_annotation_legend_param = heatmap_annotation_legend_param,
                                                    save_to_pdf = save_to_pdf,
                                                    save_to_png = save_to_png,

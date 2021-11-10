@@ -204,6 +204,48 @@ Figure_stool_bf_metab <- ggarrange(metab_stool_limma_bf_year1$volcano_plots$`Yes
 
 <img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/downstream_processing/assets/test_bf_year1_metab.png">
 
+## Generating heatmaps of significant features
+
+### Overview
+
+The `metab_limma_plot_heatmap()` function takes in the output of either `metab_limma_continuous()` or `metab_limma_categorical()`, along with a set of additional tuneable parameters, and wraps around the [`ComplexHeatmap::Heatmap()`](https://www.rdocumentation.org/packages/ComplexHeatmap/versions/1.10.2/topics/Heatmap) function to produce heatmap outputs of the significantly DA features from the limma test. 
+
+#### Usage
+
+The function will generate a heatmap with a `metab_limma_object` as the sole input, however there are a number of customisations that will improve the heatmap.
+
+The function will detect whether you have input a which type of `metab_limma` object you have input by looking at its `limma_type` list element, and will use the appropriate method for generating the heatmap. For a continuous test variable, only one heatmap will be output. But for a categorical test variable, one heatmap will be output for each of the comparisons.
+
+Further, the function will return two versions of each heatmap. The first is the standard object of class `Heatmap`, and the second is a `'grob'` object that is `ggplot2`-compatible, and can be used later with `ggarrange()`.
+
+The size of each heatmap is determined by the number of features, and whether or not you choose to display the column names (the default option is to not show the column names). If a heatmap has no features, then it will not be saved or added to the heatmap list.
+
+You can specify alternative color ramps for your continuous test variable (using [`circlize::colorRamp2()`](https://www.rdocumentation.org/packages/circlize/versions/0.4.13/topics/colorRamp2)), or a named colour vector for your categorical test variable. You can also specify additional metadata columns to plot at the top of the heatmap, and specify colour schemes for these values; this can require a fair amount of code depending on the number of extra annotations, but can help improve on the default colours.
+
+By default, the function will order your test variable (either in increasing numerical order or in alphabetical order of test variable levels), but this can be turned off by setting the `heatmap_order_columns_by_test_variable` argument to false.
+
+The default functionality will also save your heatmap(s) to both a `.pdf` and `.png` file. You need to provide a filepath (without the file extension) in order for this to work. You can disable this option by setting `save_to_pdf` and `save_to_png` to FALSE, or by simply omitting the filepath.
+
+##### Arguments
+
+- `metab_limma_object`: an instance of an object output by either the `metab_limma_continuous()` or `metab_limma_categorical()` function.
+- `metadata_to_include`: a character vector containing the names of columns that exist in the `input_metadata` element of the `metab_limma_object`.
+- `metadata_colours`: a list of colors mapped to the `column_annotation_labels` (except the test variable). See the [SingleAnnotation](https://www.rdocumentation.org/packages/ComplexHeatmap/versions/1.10.2/topics/SingleAnnotation) documentation for more details.
+- `column_annotation_labels`: a character vector containing nicer-formatted names for the column annotations.
+- `continuous_colour_ramp`: a replacement for the default continuous colour ramp, made using the `circlize::colorRamp2()` function. Only used for continuous limma objects.
+- `categorical_colours`: a named vector of length equal to number of levels in the test factor. Only used for categorical limma objects.
+- `heatmap_scale_name`: (default: 'Intensity') a name for the heatmap colour scale.
+- `heatmap_column_title`: (default: 'Differential Intensity Metabolites') a title for the heatmap.
+- `heatmap_row_title`: (default: 'Feature') a label for the rows.
+- `heatmap_order_columns_by_test_variable`: (default: TRUE) choose whether or not to order the columns by the test variable.
+- `heatmap_show_column_names`: (default: TRUE) choose whether or not to display the column names (i.e. the sample names)
+- `heatmap_rowname_text_size`: (default: 8) the font size of the rows (i.e. the feature names).
+- `heatmap_colname_text_size`: (default: 8) the font size of the columns (i.e. the sample names).
+- `heatmap_annotation_legend_param`: any number of additional legend parameters available in ComplexHeatmap (see the [Chapter 5 - Legends](https://jokergoo.github.io/ComplexHeatmap-reference/book/legends.html)) for more information.
+- `save_to_pdf`: (default: TRUE) choose whether to save to a .pdf file (requires the `output_filename` to be set)
+- `save_to_png`: (default: TRUE) choose whether to save to a .png file (requires the `output_filename` to be set)
+- `output_filename`: the output filename (both the path and name of the file); don't append the file extension (i.e. .pdf or .png) - the function will add these for you.
+
 ## Citation
 
 If you used these scripts in a publication, please mention this repository's URL.
