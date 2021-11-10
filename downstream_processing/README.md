@@ -35,7 +35,7 @@ An example with the stool metabolomics dataset:
 ```r
 # Run custom limma function on metabolites vs time
 metab_stool_limma_age <- metab_limma_continuous(metab_SE = metab_stool_glog,
-                                                metadata_var = metab_stool_glog@metadata$metadata$days / 365) # dividing by 365 to change days into years
+                                                metadata_var = metab_stool_glog@metadata$metadata$days / 365 # dividing by 365 to change days into years
                                                 adj_pval_threshold = 0.05,
                                                 logFC_threshold = 1,
                                                 volc_plot_title = 'Differential Intensity Metabolites over Time',
