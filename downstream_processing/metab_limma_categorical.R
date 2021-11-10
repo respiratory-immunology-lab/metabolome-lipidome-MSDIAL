@@ -225,6 +225,7 @@ metab_limma_categorical <- function(metab_SE, metadata_var, metadata_condition =
   
   # Make a list of all components above to return from function
   return_list <- list(input_data = metab_limma_data,
+                      input_metadata = metab_SE@metadata$metadata[colnames(metab_limma_data),],
                       test_variable = test_var,
                       model_matrix = metab_limma_design,
                       contrast_matrix = cont_matrix,

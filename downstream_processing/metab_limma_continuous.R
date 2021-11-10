@@ -100,6 +100,7 @@ metab_limma_continuous <- function(metab_SE, metadata_var, model_matrix = NULL, 
   
   # Prepare a list object to return various elements
   return_list <- list(input_data = metab_limma_data,
+                      input_metadata = metab_SE@metadata$metadata,
                       test_variable = test_var,
                       limma_significant = metab_limma_top,
                       all_values = metab_limma_all,
