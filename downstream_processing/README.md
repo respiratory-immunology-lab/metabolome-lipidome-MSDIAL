@@ -284,6 +284,8 @@ metab_stool_limma_age_hm <- metab_limma_plot_heatmap(metab_limma_object = metab_
 
 <img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/downstream_processing/assets/stool_metab_age_heatmap.png">
 
+_Metabolite names are printed as the row names, but have been omitted in this documentation._
+
 ##### Example with a categorical test variable
 
 For the second example, the approach is essentially identical. This time we have a categorical test variable, and it is nice to choose some colours that will stay consistent and match the colour scheme we have been using previously (notably for the `metab_limma_plot_all_categorical()` function). 
@@ -319,7 +321,9 @@ metab_stool_limma_bf_year1_hm <- metab_limma_plot_heatmap(metab_limma_object = m
                                                           output_filename = here::here('figures', 'heatmaps', 'stool_metab_bf_year1_heatmap'))
 ```
 
-<img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/downstream_processing/assets/stool_metab_bf_year1_heatmap.png">
+<img src="https://github.com/respiratory-immunology-lab/metabolome-lipidome-MSDIAL/blob/main/downstream_processing/assets/stool_metab_bf_year1_heatmapYes-No.png">
+
+_Again, metabolite names are printed as the row names, but have been omitted in this documentation. Also, this is just the first of the categorical comparison heatmaps produced._
 
 ## Citation
 
