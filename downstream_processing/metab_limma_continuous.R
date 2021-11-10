@@ -10,7 +10,7 @@ metab_limma_continuous <- function(metab_SE, metadata_var, model_matrix = NULL, 
                                    volc_plot_title = NULL, volc_plot_subtitle = NULL,
                                    volc_plot_xlab = NULL, volc_plot_ylab = NULL) {
   # Load required packages
-  pkgs <- c('data.table', 'tidyverse', 'SummarizedExperiment', 'S4Vectors', 'limma', 'ggplot2', 'stringr')
+  pkgs <- c('data.table', 'tidyverse', 'SummarizedExperiment', 'S4Vectors', 'limma', 'ggplot2', 'ggrepel', 'stringr')
   for (pkg in pkgs) {
     suppressPackageStartupMessages(library(pkg, character.only = TRUE))
   }
