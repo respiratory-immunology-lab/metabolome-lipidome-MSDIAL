@@ -1,3 +1,9 @@
+############################################################################################
+# Copyright (c) 2021 - Respiratory Immunology Lab, Monash University, Melbourne, Australia #
+# Author: Matthew Macowan                                                                  #
+# This script is provided under the MIT licence (see LICENSE.txt for details)              #
+############################################################################################
+
 ### HEATMAP FOR METAB_LIMMA_CONTINUOUS OUTPUT ###
 metab_limma_plot_heatmap_continuous <- function(metab_limma_cont_object, 
                                                 metadata_to_include = NULL, 
