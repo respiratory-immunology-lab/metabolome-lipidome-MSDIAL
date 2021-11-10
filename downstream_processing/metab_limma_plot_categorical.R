@@ -9,6 +9,12 @@ metab_limma_plot_indiv_categorical <- function(metab_limma_cat_object, metab_lim
                                                plot_subtitle = NULL, plot_x_lab = NULL, plot_y_lab = NULL, 
                                                plot_stat_comparisons, plot_fill_name = NULL,
                                                text_size = 8, pval_text_size = 2) {
+  # Load required packages
+  pkgs <- c('data.table', 'tidyverse', 'ggplot2', 'ggpubr')
+  for (pkg in pkgs) {
+    suppressPackageStartupMessages(library(pkg, character.only = TRUE))
+  }                                               
+
   shortname <- rownames(metab_limma_cat_object$limma_significant[[metab_limma_cat_comparison]])[feature_num]
   
   metab_df <- data.frame(t(metab_limma_cat_object$input_data[shortname,]),

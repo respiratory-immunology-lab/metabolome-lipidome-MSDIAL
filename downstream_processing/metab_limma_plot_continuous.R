@@ -8,6 +8,12 @@
 metab_limma_plot_indiv_continuous <- function(metab_limma_cont_object, feature_num, plot_subtitle = NULL, 
                                               plot_x_label = NULL, plot_y_label = NULL, 
                                               text_size = 8, geom_point_fill = 'black', geom_point_alpha = 0.7, geom_point_size = 2) {
+  # Load required packages
+  pkgs <- c('data.table', 'tidyverse', 'ggplot2', 'ggpubr')
+  for (pkg in pkgs) {
+    suppressPackageStartupMessages(library(pkg, character.only = TRUE))
+  } 
+  
   shortname <- rownames(metab_limma_cont_object$limma_significant)[feature_num]
   
   logFC <- metab_limma_cont_object$limma_significant$logFC[feature_num]
