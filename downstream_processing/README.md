@@ -214,7 +214,7 @@ The `metab_limma_plot_heatmap()` function takes in the output of either `metab_l
 
 The function will generate a heatmap with a `metab_limma_object` as the sole input, however there are a number of customisations that will improve the heatmap.
 
-The function will detect whether you have input a which type of `metab_limma` object you have input by looking at its `limma_type` list element, and will use the appropriate method for generating the heatmap. For a continuous test variable, only one heatmap will be output. But for a categorical test variable, one heatmap will be output for each of the comparisons.
+The function will detect which type of `metab_limma` object you have input by looking at its `limma_type` list element, and will use the appropriate method for generating the heatmap. For a continuous test variable, only one heatmap will be output. But for a categorical test variable, one heatmap will be output for each of the comparisons.
 
 Further, the function will return two versions of each heatmap. The first is the standard object of class `Heatmap`, and the second is a `'grob'` object that is `ggplot2`-compatible, and can be used later with `ggarrange()`.
 
