@@ -1,9 +1,3 @@
-############################################################################################
-# Copyright (c) 2021 - Respiratory Immunology Lab, Monash University, Melbourne, Australia #
-# Author: Matthew Macowan                                                                  #
-# This script is provided under the MIT licence (see LICENSE.txt for details)              #
-############################################################################################
-
 ### HEATMAP FOR METAB_LIMMA_CONTINUOUS OUTPUT ###
 metab_limma_plot_heatmap_continuous <- function(metab_limma_cont_object, 
                                                 metadata_to_include = NULL,
@@ -118,7 +112,7 @@ metab_limma_plot_heatmap_continuous <- function(metab_limma_cont_object,
   }
   
   # Prepare a grob version of the heatmap
-  grob_hm <- grid::grid.grabExpr(draw(limma_cont_heatmap))
+  grob_hm <- grid::grid.grabExpr(draw(limma_cont_heatmap), wrap.grobs = TRUE)
   
   # Prepare return list
   return_list <- list(heatmap = limma_cont_heatmap,
@@ -256,7 +250,7 @@ metab_limma_plot_heatmap_categorical <- function(metab_limma_cat_object,
   # Prepare grob versions of the heatmaps
   grob_hms <- list()
   for (hm in names(heatmap_list)) {
-    grob_hms[[hm]] <- grid::grid.grabExpr(draw(heatmap_list[[hm]]))
+    grob_hms[[hm]] <- grid::grid.grabExpr(draw(heatmap_list[[hm]]), wrap.grobs = TRUE)
   }
   
   # Prepare return list
