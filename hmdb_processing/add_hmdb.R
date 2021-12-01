@@ -1,5 +1,5 @@
 # Function to add HMDB information
-add_hmdb <- function(metab_SE, hmdb, mass_tol = 0.002) {
+add_hmdb <- function(metab_SE, hmdb, mass_tol) {
   # Set ion mass
   ion <- 1.007276
   # Transform everything into a vector for faster looping
@@ -8,9 +8,11 @@ add_hmdb <- function(metab_SE, hmdb, mass_tol = 0.002) {
   Mass_db <- as.vector(as.numeric(hmdb$monisotopic_molecular_weight))
   KEGG_db <- as.vector(hmdb$kegg_id)
   Name_db <- as.vector(hmdb$name)
+  HMDB_id_db <- as.vector(hmdb$accession)
   Mass_data <- as.vector(rowData(metab_SE)$`info.Average Mz`)
   Adduct_data <- rowData(metab_SE)$`info.Adduct type`
   HMDB_data <- rep(NA, length(Mass_data))
+  HMDB_id <- rep(NA, length(Mass_data))
   KEGG_data <- rep(NA, length(Mass_data))
   # Get masses corrected for ion precursors
   for (m in 1:length(Mass_data)){
@@ -23,11 +25,14 @@ add_hmdb <- function(metab_SE, hmdb, mass_tol = 0.002) {
     for (m in 1:length(Mass_data)){
       if (is.na(HMDB_data[m])==TRUE & between(Mass_db[n], Mass_data[m]-mass_tol, Mass_data[m]+mass_tol)==TRUE){
         HMDB_data[m] <- Name_db[n]
+        HMDB_id[m] <- HMDB_id_db[n]
         KEGG_data[m] <- KEGG_db[n]}
       else if (is.na(HMDB_data[m])==FALSE & between(Mass_db[n], Mass_data[m]-mass_tol, Mass_data[m]+mass_tol)==TRUE){
         HMDB_data[m] <- paste(HMDB_data[m],Name_db[n], sep=';')
+        HMDB_id[m] <- paste(HMDB_id_db[m], HMDB_id_db[n], sep=';')
         KEGG_data[m] <- paste(KEGG_data[m],KEGG_db[n], sep=';')}}}
   # Add new information to SE experiment object
   rowData(metab_SE)$HMDB <- HMDB_data
   rowData(metab_SE)$KEGG <- KEGG_data
+  rowData(metab_SE)$HMDB_accession <- HMDB_id
   return(metab_SE)}
