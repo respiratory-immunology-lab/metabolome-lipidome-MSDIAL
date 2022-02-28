@@ -43,5 +43,13 @@ lmsd_ann_list <- add_lmsd(metab_SE=metab_glog, lmsd=lmsd_df, mass_tol = 0.002)
 rowData(metab_glog) <- lmsd_ann_list$metadata_lmsd_table
 ```
 
+# Comparing annotations from MS-DIAL, LMSD, GNPS, HMDB, and KEGG
 
+We can now compare the assigned annotations from each of the methods using the function compare_annotations(), available in this folder. It will produce a data.frame containing only features with at least one annotation, and allow us see whether the annotations typically agree with each other.
+
+The function takes only a two argument: a SummarizedExperiment object that has undergone secondary annotation with both GNPS and HMDB.
+
+# Prepare data.frame with alignment IDs and all four annotations and filter for at least one annotation
+msdial_gnps_hmdb_glog <- compare_annotations(metab_stool_pmp$glog_results)
+A section of an example output with the stool metabolomics data looks like:
 
