@@ -78,7 +78,7 @@ add_lmsd <- function(metab_SE, lmsd, mass_tol = 0.002, cores = NA) {
   sub_lmsd <- lmsd_ann_sub[, c("LipidID", "delta", "LMSD_NAME", "LMSD_SYSTEMATIC_NAME",
                                "LMSD_ABBREVIATION", "LMSD_SYNONYMS")]
   sub_lmsd$delta <- round(sub_lmsd$delta,6)
-  agg_lmsd <- aggregate(. ~ LipidID, data = sub_lmsd, function(x) paste(unique(x), collapse = " ; "))
+  agg_lmsd <- aggregate(. ~ LipidID, data = sub_lmsd, function(x) paste(unique(x), collapse = " ; "), na.action = na.pass)
   agg_lmsd[agg_lmsd == "NA"] <- NA
   rownames(agg_lmsd) <- agg_lmsd$LipidID
   agg_lmsd <- agg_lmsd[rownames(metab_SE),]
