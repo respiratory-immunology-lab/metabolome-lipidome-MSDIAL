@@ -33,6 +33,7 @@ The function takes three parameters:
 * `metab_SE`: the `SummarizedExperiment` object.
 * `lmsd`: the formatted LMSD data.frame.
 * `mass_tol`: the MS1 mass tolerance value (set to 0.002 Da by default).
+* `cores`: uses `doParallel` and `foreach`, either select number of cores or leave as NA and will use all cores-1. 
 
 ```
 # Search annotations in LMSD and add to the SE objects
@@ -45,11 +46,24 @@ rowData(metab_glog) <- lmsd_ann_list$metadata_lmsd_table
 
 # Comparing annotations from MS-DIAL, LMSD, GNPS, HMDB, and KEGG
 
-We can now compare the assigned annotations from each of the methods using the function compare_annotations(), available in this folder. It will produce a data.frame containing only features with at least one annotation, and allow us see whether the annotations typically agree with each other.
+To compare the assigned annotations from each of the methods the function `compare_annotations()`, available in this [folder](). It will produce a data.frame containing only features with at least one annotation, and allow us see whether the annotations typically agree with each other.
 
-The function takes only a two argument: a SummarizedExperiment object that has undergone secondary annotation with both GNPS and HMDB.
+The function takes two argument: 
+* `metab_SE`: a SummarizedExperiment object that has undergone secondary annotation with LMSD, GNPS and HMDB. 
+* `agg_lmsd_ann_table`: the aggregated data.frame of distinct lipids create by `add_lmsd()`
 
-# Prepare data.frame with alignment IDs and all four annotations and filter for at least one annotation
-msdial_gnps_hmdb_glog <- compare_annotations(metab_stool_pmp$glog_results)
-A section of an example output with the stool metabolomics data looks like:
+```
+# Prepare data.frame with alignment IDs and all annotations and filter for at least one annotation
+msdial_lmsd_gnps_hmdb <- compare_annotations(metab_SE = metab_glog, 
+                                             agg_lmsd_ann = lmsd_ann_list$agg_lmsd_df)
+```
+
+An example of the output should looks like:
+
+| Command | Description |
+| --- | --- |
+| git status | List all new or modified files |
+| git diff | Show file differences that haven't been staged |
+
+
 
