@@ -84,7 +84,7 @@ add_lmsd <- function(metab_SE, lmsd, mass_tol = 0.002, cores = NA) {
   agg_lmsd <- agg_lmsd[rownames(metab_SE),]
 
   # Select 1st lipid for multiple lipid matches (lowest delta should be at the top of list)
-  top_LMSD_match <- distinct_lmsd_ann %>%
+  top_LMSD_match <- lmsd_ann_sub %>%
     group_by(LipidID) %>%
     slice_head() %>%
     arrange(factor(LipidID, levels = rownames(Mass_data)))
