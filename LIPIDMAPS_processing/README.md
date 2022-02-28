@@ -62,10 +62,21 @@ msdial_lmsd_gnps_hmdb <- compare_annotations(metab_SE = metab_glog,
 
 An example of the output should looks like:
 
-| Command | Description |
-| --- | --- |
-| git status | List all new or modified files |
-| git diff | Show file differences that haven't been staged |
+| LipidID | Mz | RT | MSDIAL_annotation | LMSD_annotation | GNPS_annotation | HMDB_annotation | KEGG_annotation |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+308_pos | 203.1506 | 1.583 | <NA> | <NA> | <NA> | Asymmetric dimethylarginine;Symmetric dimethylarginine | C03626; |
+  395_pos | 204.1230 | 1.209 | <NA> | Acetyl-D-carnitine ; Acetyl-L-carnitine ; DL-Acetylcarnitine | <NA> | L-Acetylcarnitine;N-Lactoylleucine;1-Carboxyethylleucine | C02571;; |
+400_pos | 204.1236 | 2.424 | <NA> | Acetyl-D-carnitine ; Acetyl-L-carnitine ; DL-Acetylcarnitine | <NA> | L-Acetylcarnitine;N-Lactoylleucine;1-Carboxyethylleucine | C02571;; |
+753_pos | 208.0950 | 1.387 | <NA> | <NA> | <NA> | N-Acetyl-L-phenylalanine;Phenylpropionylglycine | C03519; |
+2005_pos | 223.1068 | 1.370 | <NA> | <NA> | <NA> | Glycyl-Phenylalanine;Phenylalanylglycine |
+
+
+
+
+
+
+        ;
+
 
 
 
