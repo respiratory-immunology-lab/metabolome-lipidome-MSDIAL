@@ -38,7 +38,9 @@ The function takes three parameters:
 ```
 # Search annotations in LMSD and add to the SE objects
 # Create list for all distinct Lipid Maps matching mz in tolerance range 0.002, an aggregated df of distinct lipids and a df to replace SummarizedExperiment metadata [rowData(metab_glog)]
-lmsd_ann_list <- add_lmsd(metab_SE=metab_glog, lmsd=lmsd_df, mass_tol = 0.002) 
+lmsd_ann_list <- add_lmsd(metab_SE = metab_glog, 
+                              lmsd = lmsd_df, 
+                          mass_tol = 0.002) 
 
 # use metadata_lmsd_table to replace SE object metadata
 rowData(metab_glog) <- lmsd_ann_list$metadata_lmsd_table
