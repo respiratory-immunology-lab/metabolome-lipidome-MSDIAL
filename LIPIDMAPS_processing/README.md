@@ -68,14 +68,37 @@ An example of the output should looks like:
   395_pos | 204.1230 | 1.209 | <NA> | Acetyl-D-carnitine ; Acetyl-L-carnitine ; DL-Acetylcarnitine | <NA> | L-Acetylcarnitine;N-Lactoylleucine;1-Carboxyethylleucine | C02571;; |
 400_pos | 204.1236 | 2.424 | <NA> | Acetyl-D-carnitine ; Acetyl-L-carnitine ; DL-Acetylcarnitine | <NA> | L-Acetylcarnitine;N-Lactoylleucine;1-Carboxyethylleucine | C02571;; |
 753_pos | 208.0950 | 1.387 | <NA> | <NA> | <NA> | N-Acetyl-L-phenylalanine;Phenylpropionylglycine | C03519; |
-2005_pos | 223.1068 | 1.370 | <NA> | <NA> | <NA> | Glycyl-Phenylalanine;Phenylalanylglycine |
+2005_pos | 223.1068 | 1.370 | <NA> | <NA> | <NA> | Glycyl-Phenylalanine;Phenylalanylglycine | ; |
+  
+  
+# Keeping only annotated features
+
+From here, we can filter our SummarizedExperiment object for features with at least one annotation using the `keep_annotated()` function ([here](..)). It assigns rownames based on a naming hierarchy: LMSD > HMDB > MS-DIAL > GNPS. A new rowData element will also be added to the `SummarizedExperiment` object called shortname.
+
+This function will be applied to only a single SummarizedExperiment object, and the output can be assigned to a new object that can be used for downstream analyses. In the example below, we will run the function for just the glog-transformed data, and assign it to a new object called metab_glog.
+
+The function takes only a single argument: a SummarizedExperiment object that has undergone secondary annotation with LMSD, GNPS and HMDB.
+
+# Keep only annotated rows and generate shortname column
+metab_glog <- keep_annotated(metab_glog$glog_results)
+Aside from using rownames(), we can also retrieve the resulting "preferred" annotation names for our features as follows:
+
+# Retrieve the shortname values
+metab_shortnames <- rowData(metab_stool_glog)$shortname
+While the shorter names are succinct and useful plotting, you can view the additional annotations at any time and alter as required.
+
+# Get HMDB and KEGG annotations
+hmdb_annotations <- rowData(metab_stool_glog)$HMDB
+kegg_annotations <- rowData(metab_stool_glog)$KEGG
+
+# Rights
+
+Copyright (c) 2022 Respiratory Immunology lab, Monash University, Melbourne, Australia.
+LMSD: LIPID MAPS® structure database. Sud M., Fahy E., Cotter D., Brown A., Dennis E., Glass C., Murphy R., Raetz C., Russell D., and Subramaniam S., Nucleic Acids Research 35, D527-32 (2006)
+License: This pipeline is provided under the MIT license (See LICENSE.txt for details)
+Authors: A. Butler, C. Pattaroni and M. Macowan
 
 
-
-
-
-
-        ;
 
 
 
