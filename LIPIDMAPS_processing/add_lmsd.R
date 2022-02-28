@@ -1,7 +1,7 @@
 # Function to list of all annotations from Lipid Maps structural database
-add_lmsd <- function(metab_SE, lmsd, mass_tol = 0.002) {
+add_lmsd <- function(metab_SE, lmsd, mass_tol = 0.002, cores = NA) {
   # Load required packages
-  pkgs <- c('foreach', 'tidyverse', 'doParallel')
+  pkgs <- c('foreach', 'doParallel', 'data.table', 'tidyverse', 'SummarizedExperiment', 'S4Vectors')
   for (pkg in pkgs) {
     suppressPackageStartupMessages(library(pkg, character.only = TRUE))
   }
@@ -23,7 +23,9 @@ add_lmsd <- function(metab_SE, lmsd, mass_tol = 0.002) {
     }
   }
   #setup parallel backend to use many processors
-  cores <- detectCores()
+  if(is.na(cores) | cores > detectCores()){
+    cores <- detectCores()
+  }
   cl <- makeCluster(cores[1]-1) #not to overload your computer
   registerDoParallel(cl)
   ## Compare masses corrected with lmsd "exact masses" to find annotations that are with tolerance range
@@ -49,18 +51,18 @@ add_lmsd <- function(metab_SE, lmsd, mass_tol = 0.002) {
   }
   stopCluster(cl)
 
-  # arrange by smallest delta by lipidID group
+  # arrange smallest delta for each lipidID
   full_lmsd_ann <- full_lmsd_ann %>%
     arrange(delta, by_group = T) %>%
-    arrange(factor(LipidID, levels = rownames(Mass_data)))
+    arrange(factor(LipidID, levels = rownames(Mass_data))) # maintain original order
 
   # Remove duplicate matches for lipidID
   distinct_lmsd_ann <- full_lmsd_ann %>%
-    distinct(LipidID, LMSD_NAME, LMSD_SYSTEMATIC_NAME, .keep_all=T)
+    distinct(LipidID, NAME, SYSTEMATIC_NAME, .keep_all=T)
 
 
   # Select columns of interest
-  lmsd_ann_sub <- full_lmsd_ann[, c("LipidID","corrected_mz","delta",
+  lmsd_ann_sub <- distinct_lmsd_ann[, c("LipidID","corrected_mz","delta",
                                              "NAME","SYSTEMATIC_NAME", "CATEGORY",
                                              "MAIN_CLASS","EXACT_MASS", "ABBREVIATION",
                                              "SYNONYMS","KEGG_ID","HMDB_ID", "SUB_CLASS",
@@ -72,17 +74,17 @@ add_lmsd <- function(metab_SE, lmsd, mass_tol = 0.002) {
                                    "LMSD_SYNONYMS","LMSD_KEGG_ID","LMSD_HMDB_ID", "LMSD_SUB_CLASS",
                                    "LMSD_CLASS_LEVEL4")
 
-  # Create aggregate string of all possible lipid annotations
-  sub.lmsd <- lmsd_ann_sub[, c("LipidID", "delta", "LMSD_NAME", "LMSD_SYSTEMATIC_NAME",
+  # Create aggregate string of all lipid annotations for each LipidID
+  sub_lmsd <- lmsd_ann_sub[, c("LipidID", "delta", "LMSD_NAME", "LMSD_SYSTEMATIC_NAME",
                                "LMSD_ABBREVIATION", "LMSD_SYNONYMS")]
-  sub.lmsd$delta <- round(sub.lmsd$delta,6)
-  agg.lmsd <- aggregate(. ~ LipidID, data = sub.LMSD, function(x) paste(unique(x), collapse = " ; "))
-  agg.lmsd[agg.lmsd == "NA"] <- NA
-  rownames(agg.lmsd) <- agg.lmsd$LipidID
-  agg.lmsd <- agg.lmsd[rownames(metab_SE),]
+  sub_lmsd$delta <- round(sub_lmsd$delta,6)
+  agg_lmsd <- aggregate(. ~ LipidID, data = sub_lmsd, function(x) paste(unique(x), collapse = " ; "))
+  agg_lmsd[agg_lmsd == "NA"] <- NA
+  rownames(agg_lmsd) <- agg_lmsd$LipidID
+  agg_lmsd <- agg_lmsd[rownames(metab_SE),]
 
   # Select 1st lipid for multiple lipid matches (lowest delta should be at the top of list)
-  top_LMSD_match <- lmsd_ann_distinct %>%
+  top_LMSD_match <- distinct_lmsd_ann %>%
     group_by(LipidID) %>%
     slice_head() %>%
     arrange(factor(LipidID, levels = rownames(Mass_data)))
@@ -96,11 +98,10 @@ add_lmsd <- function(metab_SE, lmsd, mass_tol = 0.002) {
   rownames(SE_metadata_added_lmsd) <- SE_metadata_added_lmsd$LipidID
 
   lmsd_list <- list(
-    "full_lmsd_ann" = distinct_lmsd_ann, ## fill with duplicates removed
-    "agg_lmsd_df" = agg.lmsd,
+    "full_lmsd_ann" = distinct_lmsd_ann, ## full but with duplicates removed
+    "agg_lmsd_df" = agg_lmsd,
     "metadata_lmsd_table" = SE_metadata_added_lmsd
   )
 
   return(lmsd_list)
 }
-
