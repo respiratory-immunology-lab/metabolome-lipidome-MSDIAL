@@ -1,4 +1,3 @@
-```
 # Function to list of all annotations from Lipid Maps structural database
 add_lmsd <- function(metab_SE, lmsd, mass_tol = 0.002) {
   # Load required packages
@@ -104,4 +103,4 @@ add_lmsd <- function(metab_SE, lmsd, mass_tol = 0.002) {
 
   return(lmsd_list)
 }
-```
+
