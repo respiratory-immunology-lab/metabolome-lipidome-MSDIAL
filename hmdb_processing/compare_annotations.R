@@ -8,10 +8,14 @@ compare_annotations <- function(metab_SE) {
   # Prepare data.frame with alignment IDs and all four annotations and filter for at least one annotation
   msdial_gnps_hmdb <- data.frame('Alignment.ID' = rownames(metab_SE),
                                  'Retention.Time' = rowData(metab_SE)$`info.Average Rt(min)`,
+                                 'Fill_percent' = rowData(metab_SE)$`info.Fill %`,
+                                 'S/N_ratio' = rowData(metab_SE)$`info.S/N average`,
                                  'MSDIAL_annotation' = rowData(metab_SE)$`info.Metabolite name`,
                                  'GNPS_annotation' = rowData(metab_SE)$compound_name_gnps,
                                  'HMDB_annotation' = rowData(metab_SE)$HMDB,
-                                 'KEGG_annotation' = rowData(metab_SE)$KEGG) %>%
+                                 'HMDB_accession' = rowData(metab_SE)$HMDB_accession,
+                                 'KEGG_annotation' = rowData(metab_SE)$KEGG)
+  msdial_gnps_hmdb <- msdial_gnps_hmdb %>%
     column_to_rownames(var = 'Alignment.ID') %>%
     mutate(MSDIAL_annotation = replace(MSDIAL_annotation, MSDIAL_annotation == 'Unknown', NA),
            KEGG_annotation= replace(KEGG_annotation, KEGG_annotation == '', NA)) %>%
