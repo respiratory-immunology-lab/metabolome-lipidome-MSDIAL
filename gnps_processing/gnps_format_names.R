@@ -13,6 +13,13 @@ gnps_format_names <- function(gnps_pos_df, gnps_neg_df) {
     vector <- gsub('(.*) - \\d{1,3}.\\d{1,3} eV', '\\1', vector) # fix "eV" tags
   }
   
+  # Reorder the columns to put #SCAN# first
+  scan_colname_pos <- colnames(gnps_pos_df)[str_detect(colnames(gnps_pos_df), '#S')]
+  scan_colname_neg <- colnames(gnps_neg_df)[str_detect(colnames(gnps_neg_df), '#S')]
+  
+  gnps_pos_df <- gnps_pos_df %>% dplyr::select(all_of(scan_colname_pos), everything())
+  gnps_neg_df <- gnps_neg_df %>% dplyr::select(all_of(scan_colname_neg), everything())
+  
   # Change first column name from '#SCAN#'
   colnames(gnps_pos_df)[1] <- 'Alignment.ID'
   colnames(gnps_neg_df)[1] <- 'Alignment.ID'
