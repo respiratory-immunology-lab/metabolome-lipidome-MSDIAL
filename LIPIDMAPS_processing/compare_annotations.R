@@ -6,11 +6,12 @@ compare_annotations <- function(metab_SE, agg_lmsd_ann) {
   }
 
   # LMSD_annotation will prioritise use of LMSD_NAME,then LMSD_ABBREVIATION and lastly LMSD_SYSTEMATIC_NAME
-  LMSD_ann <- ifelse(is.na(agg_lmsd_ann$LMSD_NAME),
+  LMSD_ann <- data.frame("ann" = ifelse(is.na(agg_lmsd_ann$LMSD_NAME),
                     ifelse(is.na(agg_lmsd_ann$LMSD_ABBREVIATION),
                        ifelse(is.na(agg_lmsd_ann$LMSD_SYSTEMATIC_NAME), NA, agg_lmsd_ann$LMSD_SYSTEMATIC_NAME),
                       agg_lmsd_ann$LMSD_ABBREVIATION),
-                    agg_lmsd_ann$LMSD_NAME)
+                    agg_lmsd_ann$LMSD_NAME))
+ rownames(LMSD_ann) <- agg_lmsd_ann$LipidID
 
   # Prepare data.frame with alignment IDs and all four annotations and filter for at least one annotation
   msdial_lmsd_gnps_hmdb <- data.frame('LipidID' = rowData(metab_SE)$LipidID,
