@@ -15,7 +15,7 @@ Appending LMSD annotations to SummarizedExperiment objects.
 The first step is to load the formatted LMSD data.frame into your R session.
 
 ```{r}
-# Load HMDB dataset
+# Load LMSD dataset
 lmsd_df <- readRDS(here::here('lmsd', 'LMSD_2022_02_16.Rds.rds'))
 
 ### OR
