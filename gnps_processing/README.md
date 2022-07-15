@@ -35,7 +35,7 @@ Then you can click export, and the data will be in the selected directory.
 
 ### Running your data on GNPS
 
-Navigate to the [Superquick Start page](https://gnps-quickstart.ucsd.edu/), enter an email address to be notified
+Navigate to the [Superquick Start page](https://gnps-quickstart.ucsd.edu/featurebasednetworking), enter an email address to be notified
 of completion, and enter your GNPS login credentials. Then set the `Feature Generation Tool` option to "MS-Dial".
 
 You need to provide files to each of the top two boxes:
