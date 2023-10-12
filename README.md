@@ -17,7 +17,7 @@ however if you are using an older version of MS-DIAL, you will need to download 
 
 ## Methods
 
-The instructions given here are for MS-DIAL version 5. If you are using version 4, please see the legacy instructions provided [here](./instructions_v4.7.md).
+The instructions given here are for MS-DIAL version 5. If you are using version 4, please see the legacy instructions provided [here](./instructions_v4.7).
 
 ### Start up a project
 
