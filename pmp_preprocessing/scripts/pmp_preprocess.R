@@ -1,9 +1,11 @@
-pmp_preprocess <- function(pos_df, neg_df, metadata = NULL, samples_key = 'Sample', intens_cols = NULL, info_cols = NULL,
+pmp_preprocess <- function(pos_df, neg_df, metadata = NULL, samples_key = 'Sample', intens_cols = NULL, 
+                           info_cols = NULL, metab_meta = NULL, pca_group = NULL, PCA_Title = NULL,
+                           blank_name = NULL, qc_name = NULL,
                            blankFC = 5, max_perc_mv = 0.8, missingPeaksFraction = 0.8, max_rsd = 25, 
                            mv_imp_rowmax = 0.7, mv_imp_colmax = 0.7, mv_imp_method = 'knn'){
   # Load required packages
   pkgs <- c('data.table', 'tidyverse', 'ggplot2', 'pmp', 'SummarizedExperiment', 'S4Vectors',
-            'ggsci', 'stringr')
+            'ggsci', 'stringr','dplyr')
   for (pkg in pkgs) {
     suppressPackageStartupMessages(library(pkg, character.only = TRUE))
   }
@@ -13,15 +15,11 @@ pmp_preprocess <- function(pos_df, neg_df, metadata = NULL, samples_key = 'Sampl
   
   # Get info columns and intensity columns
   if (is.null(info_cols)) {
-    info_cols <- c('Alignment ID', 'Average Rt(min)', 'Average Mz', 'Metabolite name',
-                   'Adduct type', 'Post curation result', 'Fill %', 'MS/MS assigned',
-                   'Reference RT', 'Reference m/z', 'Formula', 'Ontology',
-                   'INCHIKEY', 'SMILES', 'Annotation tag (VS1.0)', 'RT matched',
-                   'm/z matched', 'MS/MS matched', 'Comment', 'Manually modified for quantification',
-                   'Manually modified for annotation', 'Isotope tracking parent ID',
-                   'Isotope tracking weight number', 'Total score', 'RT similarity',
-                   'Dot product', 'Reverse dot product', 'Fragment presence %', 'S/N average',
-                   'Spectrum reference file name', 'MS1 isotopic spectrum', 'MS/MS spectrum')
+    info_cols <- c("Alignment ID","Average Rt(min)","Average Mz","Metabolite name","Adduct type","Post curation result","Fill %","MS/MS assigned","Reference RT","Reference m/z",
+                   "Formula","Ontology","INCHIKEY","SMILES","Annotation tag (VS1.0)","RT matched","m/z matched","MS/MS matched","Comment","Manually modified for quantification",
+                   "Manually modified for annotation","Isotope tracking parent ID","Isotope tracking weight number","RT similarity","m/z similarity","Simple dot product",
+                   "Weighted dot product","Reverse dot product","Matched peaks count","Matched peaks percentage","Total score","S/N average","Spectrum reference file name",
+                   "MS1 isotopic spectrum","MS/MS spectrum")
     metab_pos_info <- metab_pos[, colnames(metab_pos) %in% info_cols]
     metab_neg_info <- metab_neg[, colnames(metab_neg) %in% info_cols]
   } else {
@@ -36,8 +34,17 @@ pmp_preprocess <- function(pos_df, neg_df, metadata = NULL, samples_key = 'Sampl
   }
   
   # Create dataframes for the SummarizedExperiment object
-  metab_pos_counts <- as.matrix(metab_pos[, intens_cols])
-  metab_neg_counts <- as.matrix(metab_neg[, intens_cols])
+  if (length(intens_cols) != length(intersect(colnames(metab_pos),intens_cols)) | 
+      length(intens_cols) != length(intersect(colnames(metab_neg),intens_cols))) {
+    Mismatch1 <- setdiff(intens_cols,colnames(metab_pos))
+    Mismatch2 <- setdiff(intens_cols,colnames(metab_neg))
+    warning("The following 'intens_cols' names were not found in metab_pos: ", paste0(Mismatch1, sep = ' '))
+    warning("The following 'intens_cols' names were not found in metab_neg: ", paste0(Mismatch2, sep = ' '))
+    stop("Check names and run again")
+  }
+  
+  metab_pos_counts <- metab_pos[, intens_cols] %>% sapply(.,as.numeric) %>% as.matrix()
+  metab_neg_counts <- metab_neg[, intens_cols] %>% sapply(.,as.numeric) %>% as.matrix()
   
   # Remove MS/MS samples (not acquired in the same way)
   metab_pos_counts <- metab_pos_counts[, !(colnames(metab_pos_counts) %in% c('MSMS_pos', 'MSMS_neg'))]
@@ -57,8 +64,20 @@ pmp_preprocess <- function(pos_df, neg_df, metadata = NULL, samples_key = 'Sampl
   metab_info <- rbind(metab_pos_info, metab_neg_info)
   
   # Create class and group vectors
-  metab_class <- substr(colnames(metab_counts), start = 1, stop = 2)
-  metab_group <- substr(colnames(metab_counts), start = 1, stop = 2)
+  if (is.null(metab_meta)) {
+    metab_class <- substr(colnames(metab_counts), start = 1, stop = 2)
+  } else {
+    if (is.null(metadata)) {
+      stop("Please provide metadata dataframe")
+    }
+    metadata_temp <- metadata[colnames(metab_counts),]
+    metadata_temp = metadata_temp[,metab_meta] %>% as.data.frame()
+    if (length(metab_meta) > 1) {
+      colnames(metadata_temp) = c("class",metab_meta[2:length(metab_meta)])
+    } else {
+      colnames(metadata_temp) = c("class")  
+    }
+  }
   
   # Alternate steps depending on whether metadata was provided
   if (is.null(metadata)) {
@@ -68,18 +87,20 @@ pmp_preprocess <- function(pos_df, neg_df, metadata = NULL, samples_key = 'Sampl
                                      colData = DataFrame(class = metab_class))
   } else {
     # Check that the metadata matches the samples
-    sample_cols <- stringr::str_detect(colnames(metab_counts), paste0(samples_key))
-    metadata <- metadata[colnames(metab_counts)[sample_cols], ]
-    identical(rownames(metadata), colnames(metab_counts)[sample_cols])
+    if (identical(rownames(metadata_temp), colnames(metab_counts)) == TRUE) {
+      message("ColData + Counts Names Match")
+    } else {
+      stop("ColData + Counts Names DO NOT Match!")
+    }
     
     # Create SummarizedExperiment object
     metab_SE <- SummarizedExperiment(assays = list(counts = metab_counts),
                                      metadata = list(metadata = metadata),
                                      rowData = list(info = metab_info),
-                                     colData = DataFrame(class = metab_class))
+                                     colData = metadata_temp)
   }
   
-  print('SummarizedExperiment object created...')
+  message('SummarizedExperiment object created...')
   
   ###
   ### FILTERING AND NORMALISATION
@@ -91,7 +112,16 @@ pmp_preprocess <- function(pos_df, neg_df, metadata = NULL, samples_key = 'Sampl
   # Replace missing values with NA to be compatible with downstream filtering
   assay(metab_SE) <- replace(assay(metab_SE), assay(metab_SE) == 0, NA)
   
-  print('Replaced missing values with NA...')
+  message('Replaced missing values with NA...')
+  
+  if (is.null(blank_name)) {
+    blank_name = "Bl"
+    warning("blank_label = 'Bl' - ensure this is correct")
+  }
+  if (is.null(qc_name)) {
+    qc_name = "QC"
+    warning("qc_label = 'QC' - ensure this is correct")
+  }
   
   # Filter peaks and samples based on blanks
   metab_filt <- filter_peaks_by_blank(df = metab_SE,
@@ -99,9 +129,10 @@ pmp_preprocess <- function(pos_df, neg_df, metadata = NULL, samples_key = 'Sampl
                                       classes = metab_SE$class,
                                       remove_samples = TRUE,
                                       remove_peaks = TRUE,
-                                      blank_label = 'Bl')
+                                      blank_label = blank_name,
+                                      qc_label = qc_name)
   
-  print('Filtered peaks and samples based on blanks...')
+  message('Filtered peaks and samples based on blanks...')
   
   # Number of features
   features1 <- dim(metab_filt)
@@ -117,31 +148,39 @@ pmp_preprocess <- function(pos_df, neg_df, metadata = NULL, samples_key = 'Sampl
   metab_filt <- filter_peaks_by_fraction(df = metab_filt,
                                          min_frac = missingPeaksFraction,
                                          classes = metab_filt$class,
-                                         method = 'across')
+                                         method = 'across',
+                                         qc_label = qc_name)
   
   # Number of features
   features3 <- dim(metab_filt)
   
-  print('Filtered peaks and samples based on missing values...')
+  message('Filtered peaks and samples based on missing values...')
   
   # Filter peaks based on the % variation in the QC
   metab_filt <- filter_peaks_by_rsd(df = metab_filt,
                                     max_rsd = max_rsd,
                                     classes = metab_filt$class,
-                                    qc_label = 'QC')
+                                    qc_label = qc_name)
   
   # Number of features
   features4 <- dim(metab_filt)
   
-  print('Filtered peaks based on the percentage variance in QC samples...')
+  message('Filtered peaks based on the percentage variance in QC samples...')
   
   # Data normalisation
   metab_norm <- pqn_normalisation(df = metab_filt,
                                   classes = metab_filt$class,
-                                  qc_label = 'QC')
+                                  qc_label = qc_name)
   
-  print('Normalised data using PQN...')
-  print('Imputing values now...')
+  message('Normalised data using PQN...')
+  
+  if ( sum(colSums(assay(metab_norm) %>% is.na()) / nrow(assay(metab_norm)) > 0.60) > 0) {
+    message('Removing samples with >60% missing values')
+    Keep <- which(colSums(assay(metab_norm) %>% is.na()) / nrow(assay(metab_norm)) < 0.60) %>% names()
+    metab_norm <- metab_norm[,Keep]
+  }
+  
+  message('Imputing values now...')
   
   # Missing values imputation
   metab_imp <- mv_imputation(df = metab_norm,
@@ -149,23 +188,32 @@ pmp_preprocess <- function(pos_df, neg_df, metadata = NULL, samples_key = 'Sampl
                              colmax = mv_imp_colmax,
                              method = mv_imp_method)
   
-  print('Finished imputing values...')
+  message('Finished imputing values...')
   
   # Data scaling
   metab_glog <- glog_transformation(df = metab_imp,
                                     classes = metab_imp$class,
-                                    qc_label = 'QC')
+                                    qc_label = qc_name)
   
-  print('Scaled data via glog algorithm...')
+  message('Scaled data via glog algorithm...')
   
   opt_lambda <- processing_history(metab_glog)$glog_transformation$lambda_opt
   
   glog_plot <- glog_plot_optimised_lambda(df = metab_imp,
                                           optimised_lambda = opt_lambda,
                                           classes = metab_imp$class,
-                                          qc_label = 'QC')
+                                          qc_label = qc_name)
   
   # Perform PCA
+  
+  if (is.null(pca_group)) {
+    pca_group = "class"
+  }
+  
+  if (!(pca_group %in% names(metab_glog@colData@listData))) {
+    stop("'pca_group' name not in colData - please specify using 'metab_meta' and 'pca_group' correctly")
+  }
+  
   PCA <- prcomp(t(assay(metab_glog)), center = TRUE)
   varexp <- c(summary(PCA)$importance[2,1]*100, summary(PCA)$importance[2,2]*100)
   
@@ -173,17 +221,21 @@ pmp_preprocess <- function(pos_df, neg_df, metadata = NULL, samples_key = 'Sampl
   data_PCA <- cbind(data.frame(Samples = rownames(PCA$x),
                                PC1 = PCA$x[,1],
                                PC2 = PCA$x[,2]),
-                    class = metab_glog$class)
+                    plot_group = metab_glog@colData@listData[[paste0(pca_group)]])
+  
+  if (is.null(PCA_Title)) {
+    PCA_Title <- "Metabolomics / Lipidomics"
+  }
   
   # Plot results
   PCA_plot <- ggplot(data_PCA, aes(x = PC1, y = PC2)) +
-    geom_point(aes(fill = class, color = class)) +
-    stat_ellipse(aes(fill = class), geom = 'polygon', type = 't', level = 0.9, alpha = 0.2) +
-    labs(title = 'Metabolomics',
+    geom_point(aes_string(fill = paste0("plot_group"), color = paste0("plot_group"))) +
+    stat_ellipse(aes_string(fill = paste0("plot_group")), geom = 'polygon', type = 't', level = 0.9, alpha = 0.2) +
+    labs(title = paste0(PCA_Title),
          x = paste0('PC1 ', round(varexp[1], 2), '%'),
          y = paste0('PC2 ', round(varexp[2], 2), '%')) +
-    scale_fill_jama(name = 'Class') +
-    scale_color_jama(name = 'Class')
+    scale_fill_jama(name = paste0(pca_group)) +
+    scale_color_jama(name = paste0(pca_group))
   
   # Make filtering dimensions dataframe
   filtering_dims <- data.frame(rbind(features0, features1, features2, features3, features4))
@@ -198,7 +250,7 @@ pmp_preprocess <- function(pos_df, neg_df, metadata = NULL, samples_key = 'Sampl
                   PCA_plot = PCA_plot,
                   filtering_dimensions = filtering_dims)
   
-  print('Done!')
+  message('Done!')
   
   results
 }
